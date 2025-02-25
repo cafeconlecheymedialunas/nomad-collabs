@@ -13,15 +13,19 @@ class Freelancer extends Model
         'user_id',
         'first_name',
         'last_name',
-        'birthday',
-        'genre',
+        'state',
+        'city',
+        'post_code',
+        'address',
+        'nick_name',
+        'description',
+        'display_name',
         'country_origin',
         'country_residence',
         'description',
         'video',
         'cover',
-        'phone',
-        'abilities',
+        
     ];
 
     public function user()

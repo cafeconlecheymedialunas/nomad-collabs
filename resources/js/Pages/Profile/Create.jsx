@@ -8,7 +8,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import EducationForm from './partials/EducationForm';
 
 
-const Edit = ({user,freelancer,educations}) => {
+const Create = ({user}) => {
 
 
     return (
@@ -19,11 +19,11 @@ const Edit = ({user,freelancer,educations}) => {
             <div className="py-12">
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <UpdateFreelancerInformation user={user} freelancer={freelancer}/>
+                        <UpdateFreelancerInformation user={user}/>
                     </div>
 
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                        <EducationForm className="max-w-xl" freelancer={freelancer} educations={educations} />
+                        <EducationForm className="max-w-xl" />
                     </div>
 
                     <div className="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
@@ -35,4 +35,4 @@ const Edit = ({user,freelancer,educations}) => {
     );
 };
 
-export default Edit;
+export default Create;

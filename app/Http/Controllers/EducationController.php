@@ -8,8 +8,6 @@ use Inertia\Inertia;
 
 class EducationController extends Controller
 {
-   
-
     /**
      * Guardar una nueva educación.
      */
@@ -19,39 +17,47 @@ class EducationController extends Controller
             'type' => 'required|string|max:255',
             'institution' => 'required|string|max:255',
             'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'finish' => 'required|boolean',
+            'init_at' => 'required|date', // Valida la fecha de inicio
+            'finish_at' => 'nullable|date|after_or_equal:init_at', // Valida la fecha de fin, si existe
         ]);
 
-        $freelancer->educations()->create($validatedData);
+        // Crear el registro de educación asociado al freelancer
+        $education = $freelancer->educations()->create($validatedData);
 
-        return redirect()->route('freelancer.education.index', $freelancer->id)->with('success', 'Education created successfully.');
+        // Devolver la respuesta Inertia con la nueva educación
+        return Inertia::render('Profile/Edit', [
+            'freelancer' => $freelancer,
+            'educations' => $freelancer->educations,
+            'success' => 'Education created successfully.'
+        ]);
     }
 
- 
     /**
      * Actualizar una educación existente.
      */
-    public function update(Request $request, Freelancer $freelancer)
+    public function update(Request $request, Freelancer $freelancer, Education $education)
     {
         $validatedData = $request->validate([
-            'education.id' => 'required|exists:educations,id', // Asegurar que el ID exista
-            'education.type' => 'sometimes|string|max:255', // "sometimes" para validar solo si está presente
-            'education.institution' => 'sometimes|string|max:255',
-            'education.title' => 'sometimes|string|max:255',
-            'education.description' => 'sometimes|string',
-            'education.finish' => 'sometimes|boolean',
+            'type' => 'sometimes|string|max:255',
+            'institution' => 'sometimes|string|max:255',
+            'title' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'finish' => 'sometimes|boolean',
+            'init_at' => 'sometimes|date',
+            'finish_at' => 'nullable|date|after_or_equal:init_at', // Valida la fecha de fin
         ]);
-    
-        // Buscar el education por ID
-        $education = Education::find($validatedData['education']['id']);
-    
-        // Actualizar el education
-        if ($education) {
-            $education->update($validatedData['education']);
-        }
-    
-        return redirect()->route('freelancer.education.index', $freelancer->id)->with('success', 'Education updated successfully.');
+
+        // Actualizar el registro de educación
+        $education->update($validatedData);
+
+        // Devolver la respuesta Inertia con la lista de educaciones actualizada
+        return Inertia::render('Profile/Edit', [
+            'freelancer' => $freelancer,
+            'educations' => $freelancer->educations,
+            'success' => 'Education updated successfully.'
+        ]);
     }
 
     /**
@@ -59,7 +65,17 @@ class EducationController extends Controller
      */
     public function destroy(Freelancer $freelancer, Education $education)
     {
+        if ($education->freelancer_id !== $freelancer->id) {
+            return redirect()->route('freelancer.education.index', $freelancer->id)
+                ->with('error', 'Unauthorized action.');
+        }
+
         $education->delete();
-        return redirect()->route('freelancer.education.index', $freelancer->id)->with('success', 'Education deleted successfully.');
+
+        return Inertia::render('Profile/Edit', [
+            'freelancer' => $freelancer,
+            'educations' => $freelancer->educations,
+            'success' => 'Education deleted successfully.'
+        ]);
     }
 }

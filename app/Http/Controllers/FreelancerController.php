@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreFreelancerRequest;
 use App\Models\Freelancer;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 
 class FreelancerController extends Controller
@@ -25,36 +27,26 @@ class FreelancerController extends Controller
      */
     public function create()
     {
-        return Inertia::render('Profile/Create',["user"=>auth()->user()]);
+        return Inertia::render('Profile/Create', ["user" => auth()->user()]);
     }
 
-   
 
-    public function store(Request $request)
+
+    public function store(StoreFreelancerRequest $request)
     {
-        // Validar los datos del formulario
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'post_code' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-            'nick_name' => 'required|string|max:255|unique:freelancers,nick_name',
-            'description' => 'required|string',
-            'display_name' => 'required|string|max:255',
-            'country_origin' => 'required|string|max:255',
-            'country_residence' => 'required|string|max:255',
-            'video' => 'nullable|url',
-            'cover' => 'nullable|url',
-        ]);
-    
-        // Crear el freelancer con los datos validados
-        $freelancer = Freelancer::create($validatedData);
-    
-        // Redirigir con un mensaje de éxito
-        return Inertia::render('Profile/Edit',["freelancer"=>$freelancer]);
+
+        $data = $request->validated();
+
+        if ($request->hasFile('cover')) {
+            $coverPath = $request->file('cover')->store('covers', 'public');
+            $data['cover'] = $coverPath; 
+        }
+
+        $freelancer = Freelancer::create($data);
+
+        // Redirigir al perfil del freelancer con un mensaje de éxito
+        return redirect()->route('freelancer.edit', $freelancer->id)
+                         ->with('success', 'Freelancer profile created successfully!');
     }
 
     /**
@@ -70,7 +62,7 @@ class FreelancerController extends Controller
      */
     public function edit(Freelancer $freelancer)
     {
-        return Inertia::render('Profile/Edit',["user"=>auth()->user(),"freelancer"=>$freelancer,"educations"=>$freelancer->educations]);
+        return Inertia::render('Profile/Edit', ["user" => auth()->user(), "freelancer" => $freelancer, "educations" => $freelancer->educations]);
     }
 
     /**
@@ -94,13 +86,13 @@ class FreelancerController extends Controller
             'video' => 'nullable|url',
             'cover' => 'nullable|url',
         ]);
-    
+
         // Buscar el freelancer por su ID
-       
-    
+
+
         // Actualizar el freelancer con los datos validados
         $freelancer->update($validatedData);
-    
+
         // Redirigir con un mensaje de éxito
         return redirect()->route('freelancer.edit', $freelancer->id)->with('success', 'Freelancer updated successfully.');
     }

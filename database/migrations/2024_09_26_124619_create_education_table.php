@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('education', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id') 
-            ->references('id')
-            ->on('freelancers'); 
+            $table->foreignId('freelancer_id')->references('id')->on('freelancers'); 
+            $table->date('init_at'); // Solo fecha
+            $table->date('finish_at')->nullable(); // Fecha opcional
             $table->string("type");
             $table->string("institution");
             $table->string("title");
-            $table->string("description");
-            $table->boolean("finish");
+            $table->string("description")->nullable();
+            $table->boolean("finished")->default(false);
             $table->timestamps();
         });
     }

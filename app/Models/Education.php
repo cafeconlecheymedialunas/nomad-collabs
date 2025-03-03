@@ -14,7 +14,9 @@ class Education extends Model
         'type',
         'institution',
         'title',
-        'finish',
+        'finished',
+        "init_at",
+        "finish_at",
     ];
 
     /**

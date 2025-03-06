@@ -1,0 +1,14 @@
+@import url("../../node_modules/bootstrap/dist/css/bootstrap.min.css");
+@import url("ace-responsive-menu.css");
+@import url("menu.css");
+@import url("animate.css");
+@import url("slider.css");
+@import url("jquery-ui.min.css");
+@import url("magnific-pupup.css");
+@import url("style.css");
+@import url("ud-custom-spacing.css");
+@import url("dashboard_navigation.css");
+@import url("responsive.css");
+body{
+    background-color: #58a6ff;
+}

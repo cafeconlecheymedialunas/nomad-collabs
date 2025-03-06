@@ -1,7 +1,5 @@
 <?php
 
-// app/Models/Service.php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,43 +11,66 @@ class Service extends Model
 
     protected $fillable = [
         'freelancer_id',
-        'category_id',
-        'skill_id',
         'title',
         'description',
+        'images',
+        'video',
+        'documents',
         'active',
-        'tag_id', // Only needed if you're using a single tag
     ];
 
-   /**
-     * Get the freelancer that owns the service.
-     */
+    protected $casts = [
+        'images' => 'array',
+        'documents' => 'array',
+    ];
+
+ 
+
     public function freelancer()
     {
         return $this->belongsTo(Freelancer::class);
     }
 
-    /**
-     * Get the categories associated with the service.
-     */
     public function categories()
     {
         return $this->belongsToMany(Category::class, 'category_service');
     }
 
-    /**
-     * Get the skills associated with the service.
-     */
-    public function skills()
-    {
-        return $this->belongsToMany(Skill::class, 'skill_service');
-    }
-
-    /**
-     * Get the tags associated with the service.
-     */
     public function tags()
     {
         return $this->belongsToMany(Tag::class, 'service_tag');
+    }
+
+    public function faqs()
+    {
+        return $this->hasMany(Faq::class);
+    }
+
+    public function requirements()
+    {
+        return $this->hasMany(Requirement::class);
+    }
+
+    // Relación con los planes
+    public function plans()
+    {
+        return $this->hasMany(Plan::class);
+    }
+
+    // Relación con características de planes
+    public function features()
+    {
+        return $this->belongsToMany(DefaultPricingPlanFeature::class, 'pricing_plan_features');
+    }
+
+    // Relación con extras de planes
+    public function extras()
+    {
+        return $this->belongsToMany(DefaultPricingPlanExtra::class, 'pricing_plan_extras');
+    }
+
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 }

@@ -16,9 +16,5 @@ class Skill extends Model
     {
         return $this->hasMany(SkillLevel::class);
     }
-    public function services()
-    {
-        return $this->belongsToMany(Service::class, 'skill_service');
-    }
-}
+  
 }

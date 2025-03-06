@@ -14,7 +14,7 @@ class Education extends Model
         'institution',
         'title',
         'description',
-        'finish',
+        'finished',
         'init_at',
         'finish_at',
         'freelancer_id',

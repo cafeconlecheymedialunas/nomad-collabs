@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wallet_transactions', function (Blueprint $table) {
+        Schema::create('wallet_withdraws', function (Blueprint $table) {
             $table->id();
             $table->decimal('amount', 10, 2);
             $table->dateTime('date');
-            $table->enum('type',[ 'withdrawal', 'payment_received' , "payment_sended", "buyed_credits"]); 
             $table->string('description')->nullable(); 
             $table->foreignId('wallet_id')->references('id')->on('wallets')->onDelete('cascade');
             $table->timestamps();
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wallet_transactions');
+        Schema::dropIfExists('wallet_withdraws');
     }
 };

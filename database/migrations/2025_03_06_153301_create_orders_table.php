@@ -22,7 +22,7 @@ return new class extends Migration
             
             $table->integer('total');
             $table->dateTime('date');
-            $table->string('operation_id', 20)->unique();
+            $table->string('sku', 20)->unique();
             $table->timestamps();
         });
         

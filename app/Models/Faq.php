@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class File extends Model
+class Faq extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'path', 
-        'name',
-        'mime_type',
-        'alt'
+        'service_id',
+        'answer',
+        'response'
     ];
 
-    public function fileables()
+    // Relación con Service
+    public function service()
     {
-        return $this->morphToMany(File::class, 'fileable');
+        return $this->belongsTo(Service::class);
     }
 }
+

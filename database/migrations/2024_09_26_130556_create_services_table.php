@@ -30,12 +30,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('skill_service', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('service_id')->constrained()->onDelete('cascade');
-            $table->foreignId('skill_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
-        });
 
         Schema::create('service_tag', function (Blueprint $table) {
             $table->id();

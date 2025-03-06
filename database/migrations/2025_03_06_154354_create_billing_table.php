@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('billing', function (Blueprint $table) {
             $table->id();
             $table->dateTime('date');
-            $table->integer('total'); 
-            $table->string('invoice_url'); 
+            $table->integer('total');
+            $table->string('invoice_url');
             $table->string('currency');
-            $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('cascade'); 
+            $table->foreignId('payment_method_id')->constrained('payment_methods')->onDelete('cascade');
             $table->morphs('billable'); 
             $table->timestamps();
         });

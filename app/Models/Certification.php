@@ -9,16 +9,25 @@ class Certification extends Model
 {
     use HasFactory;
 
+    // Campos que son asignables en masa
     protected $fillable = [
         'freelancer_id',
+        'type',
+        'institution',
         'title',
-        'issued_by',
-        'issue_date',
-        'expiration_date',
+        'description',
+        'file',
     ];
 
+    // Relación con el modelo Freelancer
     public function freelancer()
     {
         return $this->belongsTo(Freelancer::class);
+    }
+
+    // Relación con el modelo File (fileable)
+    public function file()
+    {
+        return $this->morphOne(File::class, 'fileable');
     }
 }

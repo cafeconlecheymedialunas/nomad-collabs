@@ -16,13 +16,16 @@ return new class extends Migration
             $table->foreignId('freelancer_id')->references('id')->on('freelancers');
             $table->string("title");
 
-            $table->string("company_name");
-            $table->string("country");
-            $table->date("start");
-            $table->date("end");
+            $table->string("company");
+            $table->string("type");
+            $table->string("location");
+            $table->date("init_at");
+            $table->date("finish_at");
+            $table->text("location");
             $table->text("description");
             $table->boolean("current");
             $table->timestamps();
+
         });
     }
 

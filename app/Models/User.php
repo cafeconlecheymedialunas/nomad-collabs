@@ -42,4 +42,24 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function workingHours()
+    {
+        return $this->hasMany(WorkingHour::class);
+    }
+
+    public function chats()
+    {
+        return $this->hasMany(Chat::class, 'user_1_id')
+                    ->orWhere('user_2_id', $this->id); // O también está como user_2
+    }
+
+    // Relación con los mensajes de los chats donde el usuario está involucrado
+    public function messages()
+    {
+        return $this->hasManyThrough(ChatMessage::class, Chat::class, 'user_1_id', 'chat_id', 'id', 'id')
+                    ->orWhereHas('user2', function ($query) {
+                        $query->where('user_2_id', $this->id);
+                    });
+    }
 }

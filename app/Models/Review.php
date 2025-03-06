@@ -10,13 +10,22 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
-        'score',
-        'freelancer_id',
-        'comment',
+        'order_id', 
+        'reviewer_id', 
+        'date', 
+        'rating', 
+        'comment'
     ];
 
-    public function freelancer()
+    // Relación con el pedido (order) al que pertenece la reseña
+    public function order()
     {
-        return $this->belongsTo(Freelancer::class);
+        return $this->belongsTo(Order::class);
+    }
+
+    // Relación con el revisor (user) que dejó la reseña
+    public function reviewer()
+    {
+        return $this->belongsTo(User::class, 'reviewer_id');
     }
 }

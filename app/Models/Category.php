@@ -19,10 +19,17 @@ class Category extends Model
         'service_id',  
     ];
 
+    
+
     // Define the relationship with the Service model
     public function services()
     {
         return $this->belongsToMany(Service::class, 'category_service');
+    }
+
+    public function files()
+    {
+        return $this->morphMany(File::class, 'fileable');
     }
 }
 

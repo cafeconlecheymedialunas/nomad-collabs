@@ -17,8 +17,10 @@ return new class extends Migration
             $table->string("type");
             $table->string("institution");
             $table->string("title");
+            $table->date("init_at");
+            $table->date("finish_at");
             $table->string("description");
-            $table->boolean("finish");
+            $table->boolean("finished");
             $table->timestamps();
         });
     }

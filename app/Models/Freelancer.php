@@ -22,11 +22,9 @@ class Freelancer extends Model
         'display_name',
         'country_origin',
         'country_residence',
-        'description',
-        'video',
         'cover',
-        "account_active"
-        
+        'account_active',
+        'video',
     ];
 
     public function user()
@@ -69,16 +67,16 @@ class Freelancer extends Model
         return $this->belongsToMany(Category::class);
     }
 
-
+   
     public function coverImage()
     {
-        return $this->morphOne(File::class, 'fileable')->where('type', 'cover');
+        return $this->morphOne(Fileable::class, 'fileable')->where('type', 'cover');
     }
 
   
     public function introVideo()
     {
-        return $this->morphOne(File::class, 'videoable')->where('type', 'intro');
+        return $this->morphOne(Fileable::class, 'videoable')->where('type', 'intro');
     }
 
 }

@@ -12,8 +12,8 @@ class File extends Model
     protected $fillable = [
         'path', 
     ];
-    public function fileable()
+    public function fileables()
     {
-        return $this->morphTo();
+        return $this->morphToMany(File::class, 'fileable');
     }
 }

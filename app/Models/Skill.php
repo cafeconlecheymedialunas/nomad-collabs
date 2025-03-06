@@ -9,18 +9,16 @@ class Skill extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'freelancer_id',
-        'title',
-    ];
+    protected $fillable = ['title'];
 
-    /**
-     * Relación con el modelo Freelancer.
-     *
-     * Una habilidad (skill) pertenece a un freelancer.
-     */
-    public function freelancer()
+    // Define the relationship with SkillLevel
+    public function skillLevels()
     {
-        return $this->belongsTo(Freelancer::class);
+        return $this->hasMany(SkillLevel::class);
     }
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'skill_service');
+    }
+}
 }

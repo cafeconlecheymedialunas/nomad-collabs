@@ -6,8 +6,11 @@ import UpdatePasswordForm from '../Account/Partials/UpdatePasswordForm';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import EducationForm from './partials/EducationForm';
 import { FaRegTrashCan } from 'react-icons/fa6';
+import JobExperienceForm from './partials/JobExperienceForm';
 
-const Edit = ({ user, freelancer, educations }) => {
+const Edit = ({ user, freelancer}) => {
+
+    
     return (
         <AuthenticatedLayout
             user={user}
@@ -37,13 +40,15 @@ const Edit = ({ user, freelancer, educations }) => {
                 </div>
                 <div className="row">
                     <div className="col-xl-12">
-                        <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
-                            <div className="bdrb1 pb15 mb25">
-                                <h5 className="list-title">Education</h5>
-                            </div>
-                            
-                            <EducationForm freelancer={freelancer} educations={educations} />
-                            
+                        <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">           
+                            <EducationForm freelancer={freelancer} />        
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xl-12">
+                        <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">           
+                            <JobExperienceForm freelancer={freelancer} />        
                         </div>
                     </div>
                 </div>

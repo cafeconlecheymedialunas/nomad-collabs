@@ -9,15 +9,11 @@ class Language extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'freelancer_id',
-        'language',
-        'level',
-        'can_work',
-    ];
+    protected $fillable = ['title', 'code'];
 
-    public function freelancer()
+    // Define the relationship with LanguageLevel
+    public function languageLevels()
     {
-        return $this->belongsTo(Freelancer::class);
+        return $this->hasMany(LanguageLevel::class);
     }
 }

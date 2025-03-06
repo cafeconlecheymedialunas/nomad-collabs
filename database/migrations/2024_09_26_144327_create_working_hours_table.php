@@ -13,10 +13,12 @@ return new class extends Migration
     {
         Schema::create('working_hours', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id')->constrained('freelancers')->onDelete('cascade');
-            $table->string('day_of_week'); // Ejemplo: 'Monday', 'Tuesday', etc.
+
+            $table->string('day_of_week'); 
             $table->time('start_time');
             $table->time('end_time');
+
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete("cascade"); 
             $table->timestamps();
         });
     }

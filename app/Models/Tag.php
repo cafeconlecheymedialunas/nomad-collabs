@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/Tag.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,15 +11,14 @@ class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name'];
+    protected $fillable = [
+        'name',
+        'service_id', 
+    ];
 
     public function services()
     {
-        return $this->morphedByMany(Service::class, 'taggable');
-    }
-
-    public function freelancers()
-    {
-        return $this->morphedByMany(Freelancer::class, 'taggable');
+        return $this->belongsToMany(Service::class, 'service_tag');
     }
 }
+

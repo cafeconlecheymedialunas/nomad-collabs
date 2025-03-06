@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/Category.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,13 +11,19 @@ class Category extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'title',
+        'description',
+        'slug',
+        'image',
+        'service_id',  
+    ];
+
+    // Define the relationship with the Service model
     public function services()
     {
-        return $this->morphedByMany(Service::class, 'categorizable');
-    }
-
-    public function freelancers()
-    {
-        return $this->morphedByMany(Freelancer::class, 'categorizable');
+        return $this->belongsToMany(Service::class, 'category_service');
     }
 }
+
+

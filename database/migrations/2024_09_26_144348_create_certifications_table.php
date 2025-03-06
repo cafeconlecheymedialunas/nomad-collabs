@@ -13,6 +13,14 @@ return new class extends Migration
     {
         Schema::create('certifications', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('freelancer_id') 
+            ->references('id')
+            ->on('freelancers'); 
+            $table->string("type");
+            $table->string("institution");
+            $table->string("title");
+            $table->string("description");
+            $table->string("file");
             $table->timestamps();
         });
     }

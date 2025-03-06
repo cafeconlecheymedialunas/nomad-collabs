@@ -9,29 +9,14 @@ import Menu from './Menu';
 import { FaAngleUp } from 'react-icons/fa';
 
 export default function Authenticated({ user, header, freelancer, children }) {
-    const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+   
     const [sidebarOpened, setSidebarOpened] = useState(false);
 
 
     const toggleSidebar = () => {
         setSidebarOpened(prevState => !prevState);
     };
-    useEffect(() => {
-        // Función para manejar el menú lateral (sidebar)
 
-
-
-        // Sidebar toggle
-        /*$(".dashboard_sidebar_toggle_icon").on("click", function() {
-            $(".dashboard.dashboard_wrapper").toggleClass("dsh_board_sidebar_hidden");
-        });
-
-        // Cleanup cuando el componente se desmonte
-        return () => {
-            $(".dashboard_sidebar_toggle_icon").off("click");
-            $(document).off("click", ".sidebar-menu li a");
-        };*/
-    }, []); // Solo se ejecuta cuando el componente se monta
 
     return (
 
@@ -39,7 +24,7 @@ export default function Authenticated({ user, header, freelancer, children }) {
             <div className="wrapper mm-page mm-slideout" id="mm-28">
                 <div className="preloader" style={{ display: 'none' }} />
                 {/* Main Header Nav */}
-                <Header onToggleSidebar={toggleSidebar} />
+                <Header onToggleSidebar={toggleSidebar} user={user} freelancer={freelancer}/>
                 {/* Search Modal */}
                 <SearchModal />
                 {/* Mobile Nav  */}
@@ -65,7 +50,7 @@ export default function Authenticated({ user, header, freelancer, children }) {
                     {/* /.mobile-menu */}
                 </div>
                 <div className="dashboard_content_wrapper">
-                    <div className={`dashboard dashboard_wrapper pr0-xl ${sidebarOpened ? "dsh_board_sidebar_hidden" : ""}`}>
+                    <div >
 
                         <Sidebar />
                         <div className="dashboard__main pl0-md">

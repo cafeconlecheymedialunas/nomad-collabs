@@ -28,7 +28,7 @@ class JobexperienceController extends Controller
     public function update(UpdateJobexperienceRequest $request, Freelancer $freelancer, Jobexperience $jobexperience)
     {
 
-        dd($jobexperience->id);
+      
         $job = $jobexperience->update($request->validated());
 
         return redirect()->route('freelancer.edit', $freelancer->id)->with('success', 'Jobexperience updated successfully.');
@@ -39,10 +39,6 @@ class JobexperienceController extends Controller
      */
     public function destroy(Freelancer $freelancer, Jobexperience $jobexperience)
     {
-        if ($jobexperience->freelancer_id !== $freelancer->id) {
-            return redirect()->route('freelancer.edit', $freelancer->id)
-                ->with('error', 'Unauthorized action.');
-        }
 
         $jobexperience->delete();
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\FreelancerController;
+use App\Http\Controllers\JobExperienceController;
 use App\Models\Freelancer;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -30,8 +31,8 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $user = auth()->user();
-    $freelancer = Freelancer::where('user_id', $user->id)->first(); 
-    return Inertia::render('Dashboard',["freelancer" => $freelancer]);
+    $freelancer = Freelancer::where('user_id', $user->id)->first();
+    return Inertia::render('Dashboard', ["freelancer" => $freelancer]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -44,13 +45,19 @@ Route::middleware('auth')->group(function () {
     // Usar Route::resource para generar las rutas necesarias
     Route::resource('freelancer', FreelancerController::class);
     Route::prefix('freelancer/{freelancer}')->group(function () {
-        Route::resource('education', EducationController::class)->only(["store","update","destroy"])
+        Route::resource('education', EducationController::class)->only(["store", "update", "destroy"])
             ->names([
                 'store' => 'freelancer.education.store',
                 'update' => 'freelancer.education.update',
                 'destroy' => 'freelancer.education.destroy',
             ]);
+        Route::resource('job-experience', JobExperienceController::class)->only(["store", "update", "destroy"])
+            ->names([
+                'store' => 'freelancer.job-experience.store',
+                'update' => 'freelancer.job-experience.update',
+                'destroy' => 'freelancer.job-experience.destroy',
+            ]);
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

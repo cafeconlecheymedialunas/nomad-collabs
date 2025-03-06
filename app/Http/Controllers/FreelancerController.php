@@ -19,6 +19,7 @@ class FreelancerController extends Controller
         return Inertia::render('Profile/Index', [
             "freelancers" => $freelancers,
             "auth" => auth()->user()
+
         ]);
     }
 
@@ -39,14 +40,14 @@ class FreelancerController extends Controller
 
         if ($request->hasFile('cover')) {
             $coverPath = $request->file('cover')->store('covers', 'public');
-            $data['cover'] = $coverPath; 
+            $data['cover'] = $coverPath;
         }
 
         $freelancer = Freelancer::create($data);
 
         // Redirigir al perfil del freelancer con un mensaje de éxito
         return redirect()->route('freelancer.edit', $freelancer->id)
-                         ->with('success', 'Freelancer profile created successfully!');
+            ->with('success', 'Freelancer profile created successfully!');
     }
 
     /**
@@ -62,7 +63,15 @@ class FreelancerController extends Controller
      */
     public function edit(Freelancer $freelancer)
     {
-        return Inertia::render('Profile/Edit', ["user" => auth()->user(), "freelancer" => $freelancer, "educations" => $freelancer->educations]);
+       $freelancer = $freelancer->load(["educations","jobExperiences","educations","user"]);
+
+        return Inertia::render(
+            'Profile/Edit',
+            [
+                "user" => auth()->user(),
+                "freelancer" => $freelancer
+            ]
+        );
     }
 
     /**

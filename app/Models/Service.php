@@ -1,5 +1,7 @@
 <?php
 
+// app/Models/Service.php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,31 +11,45 @@ class Service extends Model
 {
     use HasFactory;
 
-     protected $fillable = [
+    protected $fillable = [
         'freelancer_id',
-        'service_type_id',
+        'category_id',
+        'skill_id',
         'title',
         'description',
+        'active',
+        'tag_id', // Only needed if you're using a single tag
     ];
 
+   /**
+     * Get the freelancer that owns the service.
+     */
     public function freelancer()
     {
         return $this->belongsTo(Freelancer::class);
     }
 
-    public function serviceType()
-    {
-        return $this->belongsTo(ServiceType::class);
-    }
-
-
-    public function tags()
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
-    }
-
+    /**
+     * Get the categories associated with the service.
+     */
     public function categories()
     {
-        return $this->morphToMany(Category::class, 'categorizable');
+        return $this->belongsToMany(Category::class, 'category_service');
+    }
+
+    /**
+     * Get the skills associated with the service.
+     */
+    public function skills()
+    {
+        return $this->belongsToMany(Skill::class, 'skill_service');
+    }
+
+    /**
+     * Get the tags associated with the service.
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, 'service_tag');
     }
 }

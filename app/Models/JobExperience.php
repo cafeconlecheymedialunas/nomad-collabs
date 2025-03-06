@@ -12,12 +12,11 @@ class JobExperience extends Model
     protected $fillable = [
         'freelancer_id',
         'title',
-        'type_of_job',
-        'company_type',
-        'company_name',
-        'country',
-        'start',
-        'end',
+        'type',
+        'company',
+        'location',
+        'init_at',
+        'finish_at',
         'description',
         'current',
     ];

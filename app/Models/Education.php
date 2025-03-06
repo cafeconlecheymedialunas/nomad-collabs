@@ -10,13 +10,14 @@ class Education extends Model
     use HasFactory;
 
     protected $fillable = [
-        'freelancer_id',
         'type',
         'institution',
         'title',
-        'finished',
-        "init_at",
-        "finish_at",
+        'description',
+        'finish',
+        'init_at',
+        'finish_at',
+        'freelancer_id',
     ];
 
     /**

@@ -13,12 +13,31 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id') 
-            ->references('id')
-            ->on('freelancers'); 
-            $table->foreignId('service_type_id')->references('id')->on('service_types')->onDelete('cascade');
+            $table->foreignId('freelancer_id') ->references('id')->on('freelancers'); 
             $table->string("title");
             $table->text("description");
+            $table->boolean('active')->default(true);
+            $table->timestamps();
+        });
+
+        Schema::create('category_service', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('skill_service', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
+            $table->foreignId('skill_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
+        });
+
+        Schema::create('service_tag', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('service_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

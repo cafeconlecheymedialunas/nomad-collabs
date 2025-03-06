@@ -42,6 +42,7 @@ class StoreFreelancerRequest extends FormRequest
             'country_residence' => ['required', 'string', 'max:255'],
             'video' => ['nullable', 'url'],
             'user_id' => ['required', 'exists:users,id'],
+            "account_active" => ["nullable","boolean"]
         ];
     }
 }

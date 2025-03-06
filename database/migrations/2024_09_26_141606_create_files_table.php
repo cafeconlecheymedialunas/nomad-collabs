@@ -16,12 +16,19 @@ return new class extends Migration
             $table->string('path'); 
             $table->string('name'); 
             $table->string('mime_type'); 
-            $table->unsignedBigInteger('fileable_id'); 
-            $table->string('fileable_type'); 
             $table->string('alt')->nullable(); 
             $table->timestamps();
-            $table->index(['fileable_id', 'fileable_type']);
         });
+
+        Schema::create('fileables', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('file_id');
+            $table->morphs('fileable');
+            $table->timestamps();
+            $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
+        });
+        
+        
     }
 
     /**

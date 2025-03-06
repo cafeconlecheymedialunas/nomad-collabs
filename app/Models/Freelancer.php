@@ -25,6 +25,7 @@ class Freelancer extends Model
         'description',
         'video',
         'cover',
+        "account_active"
         
     ];
 
@@ -43,14 +44,14 @@ class Freelancer extends Model
         return $this->hasMany(JobExperience::class);
     }
 
-    public function portfolios()
+    public function projects()
     {
-        return $this->hasMany(Portfolio::class);
+        return $this->hasMany(Project::class);
     }
 
-    public function languages()
+    public function languageLevels()
     {
-        return $this->hasMany(Language::class);
+        return $this->hasMany(LanguageLevel::class);
     }
 
     public function educations()

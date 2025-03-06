@@ -17,14 +17,7 @@ return new class extends Migration
             $table->text("description")->nullable();
             $table->string("slug")->nullable();
             $table->string('image')->nullable();
-            $table->timestamps();
-        });
-
-        Schema::create('categorizables', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
-            $table->unsignedBigInteger('categorizable_id');
-            $table->string('categorizable_type'); // Esto almacena el nombre de la clase del modelo relacionado
+            $table->foreignId('service_id')->references('id')->on('services'); 
             $table->timestamps();
         });
     }

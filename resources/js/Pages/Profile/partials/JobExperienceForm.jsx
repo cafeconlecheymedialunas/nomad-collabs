@@ -7,13 +7,20 @@ import { router } from '@inertiajs/react';
 import SecondaryButton from "@/Components/SecondaryButton";
 
 export default function JobexperienceForm({ freelancer }) {
-    const { errors } = usePage().props;
 
     const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const [editingIndex, setEditingIndex] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-    const [currentJobexperience, setCurrentJobexperience] = useState({
+    const { 
+        data, 
+        setData, 
+        post, 
+        put, 
+        destroy, 
+        errors, 
+        processing 
+    } = useForm({
         id: null,
         title: '',
         type: '',
@@ -26,9 +33,12 @@ export default function JobexperienceForm({ freelancer }) {
         freelancer_id: freelancer?.id ?? ''
     });
 
+
+    console.log(errors)
+
     // Abrir modal para agregar experiencia laboral
     const addJobexperience = () => {
-        setCurrentJobexperience({
+        setData({
             id: null,
             title: '',
             type: '',
@@ -46,70 +56,46 @@ export default function JobexperienceForm({ freelancer }) {
 
     // Abrir modal para editar experiencia laboral
     const editJobexperience = (index) => {
-        setCurrentJobexperience(freelancer.job_experiences[index]);
+        setData(freelancer.job_experiences[index]);
         setEditingIndex(index);
         setModalOpen(true);
     };
+
     // Guardar experiencia laboral (nuevo o edición)
     const saveJobexperience = (e) => {
         e.preventDefault();
-    
 
         if (editingIndex === null) {
             // Agregar nuevo
-            router.post(`/freelancer/${freelancer.id}/job-experience`, currentJobexperience, {
-                onSuccess: (response) => {
-                    setModalOpen(false); // Cerrar el modal
-                    console.log(response)
-                },
-                onError: (errors) => {
-                    // Los errores de validación se manejan automáticamente
-                    console.error("Error al crear la experiencia laboral:", errors);
-                },
-            });
+            post(router("freelancer.job-experience.store", { freelancer: freelancer.id }));
         } else {
             // Editar existente
-            console.log(route("freelancer.job-experience.update",{freelancer:freelancer.id,job_experience:currentJobexperience.id}))
-           
-            router.put(`/freelancer/${freelancer.id}/job-experience/${currentJobexperience.id}`, currentJobexperience, {
-                onSuccess: (response) => {
-                    setModalOpen(false); // Cerrar el modal
-                    console.log(response);
-                },
-                onError: (errors) => {
-                    console.error("Error al actualizar la experiencia laboral:", errors);
-                },
-            });
+            put(route("freelancer.job-experience.update", {
+                freelancer: freelancer.id,
+                job_experience: data.id
+            }));
         }
     };
 
-    console.log(currentJobexperience)
-
     // Abrir modal de confirmación para eliminar experiencia laboral
     const openConfirmModal = (id) => {
-        setCurrentJobexperience(freelancer.job_experiences.find(exp => exp.id === id));
+        setData(freelancer.job_experiences.find(exp => exp.id === id));
         setConfirmModalOpen(true);
     };
 
     // Eliminar experiencia laboral después de confirmar
     const confirmRemoveJobexperience = () => {
-        if (currentJobexperience.id) {
-            router.delete(`/freelancer/${freelancer.id}/job-experience/${currentJobexperience.id}`, {
-                onSuccess: (response) => {
-                    setConfirmModalOpen(false); // Cerrar el modal de confirmación
-                    console.log("Éxito");
-                    console.log(response)
-                },
-                onError: (errors) => {
-                    console.error("Error al eliminar la experiencia laboral:", errors);
-                },
-            });
+        if (data.id) {
+            destroy(route("freelancer.job-experience.destroy", {
+                freelancer: freelancer.id,
+                job_experience: data.id
+            }));
         }
     };
 
     // Manejar cambios en los inputs
     const handleChange = (field, value) => {
-        setCurrentJobexperience((prev) => ({ ...prev, [field]: value }));
+        setData((prev) => ({ ...prev, [field]: value }));
     };
 
     return (
@@ -166,7 +152,7 @@ export default function JobexperienceForm({ freelancer }) {
             {/* Modal para agregar/editar experiencia laboral */}
             <Modal show={modalOpen} size="lg" centered onHide={() => setModalOpen(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>{editingIndex !== null ? "Edit work" : "Add Work"}</Modal.Title>
+                    <Modal.Title>{editingIndex !== null ? "Edit Work" : "Add Work"}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form onSubmit={saveJobexperience}>
@@ -176,7 +162,7 @@ export default function JobexperienceForm({ freelancer }) {
                                     <Form.Label>Title</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        value={currentJobexperience?.title || ""}
+                                        value={data?.title || ""}
                                         onChange={(e) => handleChange("title", e.target.value)}
                                         isInvalid={!!errors.title}
                                     />
@@ -190,7 +176,7 @@ export default function JobexperienceForm({ freelancer }) {
                                     <Form.Label>Type of Job</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        value={currentJobexperience?.type || ""}
+                                        value={data?.type || ""}
                                         onChange={(e) => handleChange("type", e.target.value)}
                                         isInvalid={!!errors.type}
                                     />
@@ -207,7 +193,7 @@ export default function JobexperienceForm({ freelancer }) {
                                     <Form.Label>Company</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        value={currentJobexperience?.company || ""}
+                                        value={data?.company || ""}
                                         onChange={(e) => handleChange("company", e.target.value)}
                                         isInvalid={!!errors.company}
                                     />
@@ -221,7 +207,7 @@ export default function JobexperienceForm({ freelancer }) {
                                     <Form.Label>Location</Form.Label>
                                     <Form.Control
                                         type="text"
-                                        value={currentJobexperience?.location || ""}
+                                        value={data?.location || ""}
                                         onChange={(e) => handleChange("location", e.target.value)}
                                         isInvalid={!!errors.location}
                                     />
@@ -238,7 +224,7 @@ export default function JobexperienceForm({ freelancer }) {
                                     <Form.Label>Inish At</Form.Label>
                                     <Form.Control
                                         type="date"
-                                        value={currentJobexperience?.init_at || ""}
+                                        value={data?.init_at || ""}
                                         onChange={(e) => handleChange("init_at", e.target.value)}
                                         isInvalid={!!errors.init_at}
                                     />
@@ -252,18 +238,18 @@ export default function JobexperienceForm({ freelancer }) {
                                     <Form.Label>¿It is your current work?</Form.Label>
                                     <Form.Check
                                         type="checkbox"
-                                        checked={currentJobexperience?.current || false}
+                                        checked={data?.current || false}
                                         onChange={(e) => handleChange("current", e.target.checked)}
                                     />
                                 </Form.Group>
                             </Col>
-                            {!currentJobexperience?.current && (
+                            {!data?.current && (
                                 <Col sm={6} className="mb-2">
                                     <Form.Group>
                                         <Form.Label>Finish at</Form.Label>
                                         <Form.Control
                                             type="date"
-                                            value={currentJobexperience?.finish_at || ""}
+                                            value={data?.finish_at || ""}
                                             onChange={(e) => handleChange("finish_at", e.target.value)}
                                             isInvalid={!!errors.finish_at}
                                         />
@@ -280,7 +266,7 @@ export default function JobexperienceForm({ freelancer }) {
                             <Form.Control
                                 as="textarea"
                                 rows={5}
-                                value={currentJobexperience?.description || ""}
+                                value={data?.description || ""}
                                 onChange={(e) => handleChange("description", e.target.value)}
                                 isInvalid={!!errors.description}
                             />

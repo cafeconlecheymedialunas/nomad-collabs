@@ -2,34 +2,29 @@
 
 namespace Database\Factories;
 
+use App\Models\Education;
 use App\Models\Freelancer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Education>
- */
 class EducationFactory extends Factory
 {
+    // Definir el modelo que el factory representa
+    protected $model = Education::class;
+
     /**
      * Define the model's default state.
      *
-     * @return array<string, mixed>
+     * @return array
      */
-    public function definition(): array
+    public function definition()
     {
-        $init_at = $this->faker->dateTimeBetween('-10 years', '-2 years');
-        $finish_at = $this->faker->dateTimeBetween($init_at, 'now');
-        $finished = $this->faker->boolean(80); // 80% de probabilidad de que esté terminado
-
         return [
-            'freelancer_id' => Freelancer::factory(), // Relación con Freelancer
-            'init_at' => $init_at,
-            'finish_at' => $finished ? $finish_at : null, // Si no está terminado, fecha de finalización es null
-            'type' => $this->faker->randomElement(['Diploma', 'Licenciatura', 'Maestría', 'Doctorado', 'Certificación']),
-            'institution' => $this->faker->company,
-            'title' => $this->faker->jobTitle,
-            'description' => $this->faker->sentence(10),
-            'finished' => $finished,
+            'freelancer_id' => Freelancer::factory(), // Asocia el Freelancer con el Factory
+            'type' => $this->faker->word, // Tipo de educación (por ejemplo, "Grado", "Máster")
+            'institution' => $this->faker->company, // Institución educativa (nombre de universidad)
+            'title' => $this->faker->sentence, // Título del grado
+            'description' => $this->faker->paragraph, // Descripción de los estudios
+            'finish' => $this->faker->boolean, // Si está finalizado o no
         ];
     }
 }

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->text("description")->nullable();
             $table->string("slug")->nullable();
             $table->string('image')->nullable();
-            $table->foreignId('service_id')->references('id')->on('services'); 
             $table->timestamps();
         });
     }

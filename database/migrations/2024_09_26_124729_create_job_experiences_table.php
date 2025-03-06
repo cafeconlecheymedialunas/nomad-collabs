@@ -13,16 +13,16 @@ return new class extends Migration
     {
         Schema::create('job_experiences', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id')->references('id')->on('freelancers'); 
-         $table->string("title");
-        
-         $table->string("company_name");
-         $table->string("country");
-         $table->date("start");
-         $table->date("end");
-         $table->text("description");
-         $table->boolean("current");
-         $table->timestamps();
+            $table->foreignId('freelancer_id')->references('id')->on('freelancers');
+            $table->string("title");
+
+            $table->string("company_name");
+            $table->string("country");
+            $table->date("start");
+            $table->date("end");
+            $table->text("description");
+            $table->boolean("current");
+            $table->timestamps();
         });
     }
 

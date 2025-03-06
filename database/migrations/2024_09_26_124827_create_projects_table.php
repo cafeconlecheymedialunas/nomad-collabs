@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id') 
-            ->references('id')
-            ->on('freelancers'); 
+            $table->foreignId('freelancer_id')->references('id')->on('freelancers'); 
             $table->string("title");
             $table->date("start")->nullable();
             $table->date("end")->nullable();

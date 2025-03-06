@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('educations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id') 
-            ->references('id')
-            ->on('freelancers'); 
+            $table->foreignId('freelancer_id')->references('id')->on('freelancers'); 
             $table->string("type");
             $table->string("institution");
             $table->string("title");

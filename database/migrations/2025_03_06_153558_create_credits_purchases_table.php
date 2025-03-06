@@ -16,8 +16,8 @@ return new class extends Migration
             $table->dateTime('date');
             $table->decimal('amount_spent', 10, 2); // Dinero real gastado (por ejemplo, en USD, EUR, etc.)
             $table->decimal('currency_received', 10, 2); // Monedas recibidas
-            // Relación con la tabla de usuarios
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('operation_id', 20)->unique();
             $table->timestamps();
         });
     }

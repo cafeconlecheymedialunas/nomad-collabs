@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('freelancer_id')->constrained()->onDelete('cascade'); // Relación con el freelancer
+            $table->foreignId('service_id')->constrained()->onDelete('cascade'); // Relación con el servicio
             $table->string('name'); // Nombre del plan
             $table->text('description'); // Descripción del plan
             $table->decimal('price', 10, 2); // Precio del plan

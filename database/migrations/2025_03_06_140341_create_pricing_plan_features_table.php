@@ -13,16 +13,12 @@ return new class extends Migration
     {
         Schema::create('pricing_plan_features', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('plan_id'); // Relación con el plan
-            $table->unsignedBigInteger('feature_id')->nullable(); // Relación con características predeterminadas
-            $table->string('name'); // Nombre de la característica personalizada
-            $table->text('description')->nullable(); // Descripción de la característica personalizada
-            $table->string('value'); // Valor de la característica (ej. "3 días", "2 revisiones")
+            $table->foreignId('plan_id')->constrained()->onDelete('cascade');
+            $table->foreignId('feature_id')->nullable()->constrained('default_pricing_plan_features')->onDelete('cascade');
+            $table->string('name');
+            $table->text('description')->nullable();
+            $table->string('value');
             $table->timestamps();
-
-            // Relaciones con las otras tablas
-            $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
-            $table->foreign('feature_id')->references('id')->on('default_pricing_plan_features')->onDelete('cascade');
         });
     }
 

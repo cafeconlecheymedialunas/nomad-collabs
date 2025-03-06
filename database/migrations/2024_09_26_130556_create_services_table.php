@@ -16,6 +16,9 @@ return new class extends Migration
             $table->foreignId('freelancer_id') ->references('id')->on('freelancers'); 
             $table->string("title");
             $table->text("description");
+            $table->json("images");
+            $table->string("video");
+            $table->json("documents");
             $table->boolean('active')->default(true);
             $table->timestamps();
         });

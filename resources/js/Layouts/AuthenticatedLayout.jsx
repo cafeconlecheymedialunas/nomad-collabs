@@ -1,125 +1,87 @@
-import { useState } from 'react';
-import ApplicationLogo from '@/Components/ApplicationLogo';
-import Dropdown from '@/Components/Dropdown';
-import NavLink from '@/Components/NavLink';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Link } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
-export default function Authenticated({ user, header, children }) {
+import Modal from '@/Components/Modal';
+import Header from './Header';
+import SearchModal from './SearchModal';
+import Sidebar from './Sidebar';
+import Footer from './Footer';
+import Menu from './Menu';
+import { FaAngleUp } from 'react-icons/fa';
+
+export default function Authenticated({ user, header, freelancer, children }) {
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
+    const [sidebarOpened, setSidebarOpened] = useState(false);
+
+
+    const toggleSidebar = () => {
+        setSidebarOpened(prevState => !prevState);
+    };
+    useEffect(() => {
+        // Función para manejar el menú lateral (sidebar)
+
+
+
+        // Sidebar toggle
+        /*$(".dashboard_sidebar_toggle_icon").on("click", function() {
+            $(".dashboard.dashboard_wrapper").toggleClass("dsh_board_sidebar_hidden");
+        });
+
+        // Cleanup cuando el componente se desmonte
+        return () => {
+            $(".dashboard_sidebar_toggle_icon").off("click");
+            $(document).off("click", ".sidebar-menu li a");
+        };*/
+    }, []); // Solo se ejecuta cuando el componente se monta
 
     return (
-        <div className="min-h-screen bg-gray-100">
-            <nav className="bg-white border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16">
-                        <div className="flex">
-                            <div className="shrink-0 flex items-center">
-                                <Link href="/">
-                                    <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
-                                </Link>
-                            </div>
 
-                            <div className="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                                <NavLink href={route('dashboard')} active={route().current('dashboard')}>
-                                    Dashboard
-                                </NavLink>
+        <div>
+            <div className="wrapper mm-page mm-slideout" id="mm-28">
+                <div className="preloader" style={{ display: 'none' }} />
+                {/* Main Header Nav */}
+                <Header onToggleSidebar={toggleSidebar} />
+                {/* Search Modal */}
+                <SearchModal />
+                {/* Mobile Nav  */}
+                <div id="page" className="mobilie_header_nav stylehome1">
+                    <div className="mobile-menu">
+                        <div className="header bdrb1">
+                            <div className="menu_and_widgets">
+                                <div className="mobile_menu_bar d-flex justify-content-between align-items-center">
+                                    <a className="mobile_logo" href="#">
+                                        <img src="https://creativelayers.net/themes/freeio-html/images/header-logo3.svg" />
+                                    </a>
+                                    <div className="right-side text-end">
+                                        <a href="page-login.html">join</a>
+                                        <a className="menubar ml30" href="#menu">
+                                            <img src="https://creativelayers.net/themes/freeio-html/images/mobile-dark-nav-icon.svg" />
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
+                            <div className="posr"><div className="mobile_menu_close_btn"><span className="far fa-times" /></div></div>
                         </div>
+                    </div>
+                    {/* /.mobile-menu */}
+                </div>
+                <div className="dashboard_content_wrapper">
+                    <div className={`dashboard dashboard_wrapper pr0-xl ${sidebarOpened ? "dsh_board_sidebar_hidden" : ""}`}>
 
-                        <div className="hidden sm:flex sm:items-center sm:ms-6">
-                            <div className="ms-3 relative">
-                                <Dropdown>
-                                    <Dropdown.Trigger>
-                                        <span className="inline-flex rounded-md">
-                                            <button
-                                                type="button"
-                                                className="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
-                                            >
-                                                {user.name}
-
-                                                <svg
-                                                    className="ms-2 -me-0.5 h-4 w-4"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    viewBox="0 0 20 20"
-                                                    fill="currentColor"
-                                                >
-                                                    <path
-                                                        fillRule="evenodd"
-                                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                        clipRule="evenodd"
-                                                    />
-                                                </svg>
-                                            </button>
-                                        </span>
-                                    </Dropdown.Trigger>
-
-                                    <Dropdown.Content>
-                                        <Dropdown.Link href={route('account.edit')}>Account</Dropdown.Link>
-                                        <Dropdown.Link href={route('logout')} method="post" as="button">
-                                            Log Out
-                                        </Dropdown.Link>
-                                    </Dropdown.Content>
-                                </Dropdown>
+                        <Sidebar />
+                        <div className="dashboard__main pl0-md">
+                            <div className="dashboard__content hover-bgc-color">
+                                {children}
                             </div>
-                        </div>
-
-                        <div className="-me-2 flex items-center sm:hidden">
-                            <button
-                                onClick={() => setShowingNavigationDropdown((previousState) => !previousState)}
-                                className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out"
-                            >
-                                <svg className="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                                    <path
-                                        className={!showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M4 6h16M4 12h16M4 18h16"
-                                    />
-                                    <path
-                                        className={showingNavigationDropdown ? 'inline-flex' : 'hidden'}
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                </svg>
-                            </button>
+                            <Footer />
                         </div>
                     </div>
                 </div>
-
-                <div className={(showingNavigationDropdown ? 'block' : 'hidden') + ' sm:hidden'}>
-                    <div className="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink href={route('dashboard')} active={route().current('dashboard')}>
-                            Dashboard
-                        </ResponsiveNavLink>
-                    </div>
-
-                    <div className="pt-4 pb-1 border-t border-gray-200">
-                        <div className="px-4">
-                            <div className="font-medium text-base text-gray-800">{user.name}</div>
-                            <div className="font-medium text-sm text-gray-500">{user.email}</div>
-                        </div>
-
-                        <div className="mt-3 space-y-1">
-                            <ResponsiveNavLink href={route('account.edit')}>Account</ResponsiveNavLink>
-                            <ResponsiveNavLink method="post" href={route('logout')} as="button">
-                                Log Out
-                            </ResponsiveNavLink>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {header && (
-                <header className="bg-white shadow">
-                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">{header}</div>
-                </header>
-            )}
-
-            <main>{children}</main>
+                <a href="#" className="scrollToHome show" ><FaAngleUp /></a>
+            </div>
+            {/* Wrapper End */}
+            {/* Custom script for all pages */}
+            <Menu />
         </div>
+
     );
 }

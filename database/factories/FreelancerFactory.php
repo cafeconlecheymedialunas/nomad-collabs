@@ -18,14 +18,20 @@ class FreelancerFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => User::factory(),
-            'first_name' => $this->faker->firstName,
-            'last_name' => $this->faker->lastName,
-            'birthday' => $this->faker->date(),
-            'genre' => $this->faker->randomElement(['Femenino', 'Masculino', 'Otro']),
-            'country_origin' => $this->faker->countryCode,
-            'country_residence' => $this->faker->countryCode,
-            'description' => $this->faker->paragraph,
+            'user_id' => User::factory(), // Asocia un usuario al freelancer
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'state' => $this->faker->state(),
+            'city' => $this->faker->city(),
+            'post_code' => $this->faker->postcode(),
+            'address' => $this->faker->address(),
+            'nick_name' => $this->faker->unique()->userName(),
+            'description' => $this->faker->paragraph(),
+            'display_name' => $this->faker->name(),
+            'country_origin' => $this->faker->country(),
+            'country_residence' => $this->faker->country(),
+            'video' => $this->faker->optional()->url(),
+            'cover' => $this->faker->optional()->imageUrl(),
         ];
     }
 }

@@ -1,231 +1,220 @@
-import React, { useState } from 'react';
-import { useForm, usePage } from '@inertiajs/react';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
-import TextArea from '@/Components/TextArea';
-import Checkbox from '@/Components/Checkbox';
-import { FaTrash, FaPlus, FaGraduationCap, FaSchool, FaBook, FaCheckCircle, FaEdit, FaSave } from 'react-icons/fa';
+import React, { useState, useCallback } from "react";
+import { useForm } from "@inertiajs/react";
+import { FaPlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
+import { Button, Modal, Form, Row, Col } from "react-bootstrap";
+import PrimaryButton from "@/Components/PrimaryButton";
 
 export default function EducationForm({ freelancer, educations: existingEducations = [] }) {
-    const { data, setData, patch, processing, errors } = useForm({
-        freelancer_id: freelancer.id,
+    const { data, setData, post, put, destroy, processing, errors } = useForm({
+        freelancer_id: freelancer?.id ?? '',
         educations: existingEducations.map(edu => ({
-            id: edu.id, // Incluir el ID para identificar registros existentes
-            type: edu.type,
-            institution: edu.institution,
-            title: edu.title,
-            description: edu.description,
-            finish: edu.finish,
-        })) || [
-            {
-                type: '',
-                institution: '',
-                title: '',
-                description: '',
-                finish: false,
-            },
-        ],
+            id: edu.id || null,
+            type: edu.type || '',
+            institution: edu.institution || '',
+            title: edu.title || '',
+            description: edu.description || '',
+            finish: edu.finish || false,
+            init_at: edu.init_at || '',
+            finish_at: edu.finish_at || '',
+        })),
     });
 
-    // Estado para rastrear el education que se está editando
+    const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const [editingIndex, setEditingIndex] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [currentEducation, setCurrentEducation] = useState(null);
 
-    // Agregar una nueva fila de educación
-    const addEducation = () => {
-        const newEducation = {
+    // Función para abrir modal y preparar el estado
+    const openModal = useCallback((index = null) => {
+        setEditingIndex(index);
+        setCurrentEducation(index === null ? {
+            id: null,
             type: '',
             institution: '',
             title: '',
             description: '',
             finish: false,
-        };
-    
-        // Agregar la nueva educación al estado
-        setData('educations', [...data.educations, newEducation]);
-    
-        // Establecer el índice de la nueva educación en modo edición
-        setEditingIndex(data.educations.length);
+            init_at: '',
+            finish_at: '',
+        } : { ...data.educations[index] });
+        setModalOpen(true);
+    }, [data]);
 
-     
-    };
+    // Función para cerrar el modal
+    const closeModal = () => setModalOpen(false);
 
-    // Eliminar una fila de educación
-    const removeEducation = (index) => {
-        const updatedEducations = data.educations.filter((_, i) => i !== index);
-        setData('educations', updatedEducations);
-    };
+    // Función común para actualizar educaciones
+    const updateEducations = useCallback((educations) => {
+        setData("educations", educations);
+    }, [setData]);
 
-    // Actualizar los datos de una fila específica
-    const handleEducationChange = (index, field, value) => {
-        const updatedEducations = data.educations.map((education, i) =>
-            i === index ? { ...education, [field]: value } : education
-        );
-        setData('educations', updatedEducations);
-    };
+    // Guardar educación (nuevo o edición)
+    const saveEducation = (e) => {
+        e.preventDefault();
 
-    // Activar el modo de edición para un education específico
-    const editEducation = (index) => {
-        setEditingIndex(index);
-    };
+        const routeName = editingIndex === null ? "freelancer.education.store" : "freelancer.education.update";
+        const routeParams = editingIndex === null
+            ? { freelancer: freelancer?.id }
+            : { freelancer: freelancer?.id, education: currentEducation.id };
 
-    // Guardar los cambios de un education específico
-    const saveEducation = (index) => {
-        const education = data.educations[index];
+        const method = editingIndex === null ? post : put;
 
-        // Enviar solo el education editado al backend
-        patch(route('freelancer.education.update', {
-            freelancer: freelancer.id, // Parámetro freelancer
-            education: education.id,   // Parámetro education
-        }), {
-            education: education, // Datos del education que se están actualizando
-            preserveScroll:true
+        method(route(routeName, routeParams), {
+            data: currentEducation,
+            preserveScroll: true,
+            onSuccess: (response) => {
+                updateEducations(response.props.educations);
+                closeModal();
+            },
         });
+    };
 
-        // Desactivar el modo de edición
-        setEditingIndex(null);
+    // Eliminar educación
+    const removeEducation = (index, id) => {
+        if (!window.confirm("Are you sure you want to delete this education?")) return;
+
+        destroy(route("freelancer.education.destroy", { freelancer: freelancer?.id, education: id }), {
+            preserveScroll: true,
+            onSuccess: (response) => {
+                updateEducations(response.props.educations);
+            },
+        });
+    };
+
+    // Manejar cambios en los inputs
+    const handleChange = (field, value) => {
+        setCurrentEducation((prev) => ({ ...prev, [field]: value }));
     };
 
     return (
-        <form className="mt-6 space-y-6">
-            {data.educations.map((education, index) => (
-                <div key={index} className="p-4 border rounded-lg">
-                    <div className="flex justify-between items-center">
-                        {/* Contenido de la fila */}
-                        <div className="grid grid-cols-3 gap-4 w-full">
-                            {/* Tipo de educación */}
-                            <div>
-                                <InputLabel htmlFor={`type-${index}`} value="Type" />
-                                <div className="flex items-center mt-1">
-                                    <FaGraduationCap className="text-gray-500 mr-2" />
-                                    <TextInput
-                                        id={`type-${index}`}
-                                        name={`educations[${index}].type`}
-                                        className={`block w-full ${editingIndex !== index ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : 'bg-white text-gray-900'}`}
-                                        value={education.type}
-                                        onChange={(e) => handleEducationChange(index, 'type', e.target.value)}
-                                        disabled={editingIndex !== index} // Deshabilitar si no está en modo de edición
-                                        required
-                                    />
-                                </div>
-                                <InputError className="mt-2" message={errors[`educations.${index}.type`]} />
-                            </div>
-
-                            {/* Institución */}
-                            <div>
-                                <InputLabel htmlFor={`institution-${index}`} value="Institution" />
-                                <div className="flex items-center mt-1">
-                                    <FaSchool className="text-gray-500 mr-2" />
-                                    <TextInput
-                                        id={`institution-${index}`}
-                                        name={`educations[${index}].institution`}
-                                        className={`block w-full ${editingIndex !== index ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : 'bg-white text-gray-900'}`}
-                                        value={education.institution}
-                                        onChange={(e) => handleEducationChange(index, 'institution', e.target.value)}
-                                        disabled={editingIndex !== index} // Deshabilitar si no está en modo de edición
-                                        required
-                                    />
-                                </div>
-                                <InputError className="mt-2" message={errors[`educations.${index}.institution`]} />
-                            </div>
-
-                            {/* Título */}
-                            <div>
-                                <InputLabel htmlFor={`title-${index}`} value="Title" />
-                                <div className="flex items-center mt-1">
-                                    <FaBook className="text-gray-500 mr-2" />
-                                    <TextInput
-                                        id={`title-${index}`}
-                                        name={`educations[${index}].title`}
-                                        className={`block w-full ${editingIndex !== index ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : 'bg-white text-gray-900'}`}
-                                        value={education.title}
-                                        onChange={(e) => handleEducationChange(index, 'title', e.target.value)}
-                                        disabled={editingIndex !== index} // Deshabilitar si no está en modo de edición
-                                        required
-                                    />
-                                </div>
-                                <InputError className="mt-2" message={errors[`educations.${index}.title`]} />
-                            </div>
-
-                            {/* Descripción */}
-                            <div className="mt-4">
-                                <InputLabel htmlFor={`description-${index}`} value="Description" />
-                                <TextArea
-                                    id={`description-${index}`}
-                                    name={`educations[${index}].description`}
-                                    className={`mt-1 block w-full ${editingIndex !== index ? 'bg-gray-100 text-gray-600 cursor-not-allowed' : 'bg-white text-gray-900'}`}
-                                    value={education.description}
-                                    onChange={(e) => handleEducationChange(index, 'description', e.target.value)}
-                                    disabled={editingIndex !== index} // Deshabilitar si no está en modo de edición
-                                />
-                                <InputError className="mt-2" message={errors[`educations.${index}.description`]} />
-                            </div>
-
-                            {/* ¿Finalizado? */}
-                            <div className="mt-4">
-                                <label className="flex items-center">
-                                    <Checkbox
-                                        name={`educations[${index}].finish`}
-                                        checked={education.finish}
-                                        onChange={(e) => handleEducationChange(index, 'finish', e.target.checked)}
-                                        disabled={editingIndex !== index} // Deshabilitar si no está en modo de edición
-                                        className={`${editingIndex !== index ? 'text-gray-400' : 'text-blue-500'}`}
-                                    />
-                                    <FaCheckCircle className="text-gray-500 ml-2" />
-                                    <span className="ml-2 text-sm text-gray-600">Finished</span>
-                                </label>
-                                <InputError className="mt-2" message={errors[`educations.${index}.finish`]} />
-                            </div>
-                        </div>
-
-                        {/* Botones de acciones */}
-                        <div className="flex items-center space-x-2">
-                            {editingIndex === index ? (
-                                // Botón para guardar cambios
-                                <button
-                                    type="button"
-                                    onClick={() => saveEducation(index)}
-                                    className="text-green-500 hover:text-green-700 flex items-center"
-                                >
-                                    <FaSave className="mr-2" />
-                                    Save
-                                </button>
-                            ) : (
-                                // Botón para editar
-                                <button
-                                    type="button"
-                                    onClick={() => editEducation(index)}
-                                    className="text-blue-500 hover:text-blue-700 flex items-center"
-                                >
-                                    <FaEdit className="mr-2" />
-                                    Edit
-                                </button>
-                            )}
-                            {/* Botón para eliminar la fila */}
-                            <button
-                                type="button"
-                                onClick={() => removeEducation(index)}
-                                className="text-red-500 hover:text-red-700 flex items-center"
-                            >
-                                <FaTrash className="mr-2" />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            ))}
-
-            {/* Botón para agregar una nueva fila */}
-            <div>
-                <button
-                    type="button"
-                    onClick={addEducation}
-                    className="text-blue-500 hover:text-blue-700 flex items-center"
-                >
-                    <FaPlus className="mr-2" />
-                    Add Education
-                </button>
+        <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">
+            <div className="bdrb1 pb15 mb30 d-sm-flex justify-content-between">
+                <h5 className="list-title">Education</h5>
+                <a href="#" className="add-more-btn text-thm" onClick={() => openModal()}>
+                    <FaPlus /> Add Education
+                </a>
             </div>
-        </form>
+
+            <div className="position-relative">
+                <div className="educational-quality">
+                    {data.educations.map((education, index) => (
+                        <div key={education.id}>
+                            <div className="m-circle text-thm">M</div>
+                            <div className="mb40 position-relative">
+                                <div className="del-edit">
+                                    <div className="d-flex">
+                                        <a href="#" className="icon me-2" onClick={() => openModal(index)}>
+                                            <FaPencil />
+                                        </a>
+                                        <a href="#" className="icon" onClick={() => removeEducation(index, education.id)}>
+                                            <FaRegTrashCan />
+                                        </a>
+                                    </div>
+                                </div>
+                                <span className="tag">
+                                    {education.init_at && (() => {
+                                        const [initYear, initMonth] = education.init_at.split("-");
+                                        const [finishYear, finishMonth] = education.finish_at ? education.finish_at.split("-") : [];
+                                        const initMonthText = monthNames[parseInt(initMonth, 10) - 1];
+                                        const finishMonthText = finishMonth ? monthNames[parseInt(finishMonth, 10) - 1] : "";
+
+                                        if (finishYear && initYear === finishYear) {
+                                            return `${initMonthText} ${initYear} - ${finishMonthText} ${finishYear}`;
+                                        }
+
+                                        return `${initYear}${finishYear ? ` - ${finishYear}` : ""}`;
+                                    })()}
+                                </span>
+
+                                <h5 className="mt15">{education.title}</h5>
+                                <h6 className="text-thm">{education.institution}</h6>
+                                <p>{education.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            <Modal show={modalOpen} onHide={closeModal}>
+                <Modal.Header closeButton>
+                    <Modal.Title>{editingIndex === null ? "Add Education" : "Edit Education"}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={saveEducation}>
+                        <Row>
+                            <Col xs={12} sm={6}>
+                                <Form.Group>
+                                    <Form.Label>Institution</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={currentEducation?.institution || ''}
+                                        onChange={(e) => handleChange("institution", e.target.value)}
+                                    />
+                                    {errors.institution && <span className="text-danger">{errors.institution}</span>}
+                                </Form.Group>
+                            </Col>
+                            <Col xs={12} sm={6}>
+                                <Form.Group>
+                                    <Form.Label>Title</Form.Label>
+                                    <Form.Control
+                                        type="text"
+                                        value={currentEducation?.title || ''}
+                                        onChange={(e) => handleChange("title", e.target.value)}
+                                    />
+                                    {errors.title && <span className="text-danger">{errors.title}</span>}
+                                </Form.Group>
+                            </Col>
+                            <Col xs={12}>
+                                <Form.Group>
+                                    <Form.Label>Description</Form.Label>
+                                    <Form.Control
+                                        as="textarea"
+                                        value={currentEducation?.description || ''}
+                                        onChange={(e) => handleChange("description", e.target.value)}
+                                    />
+                                    {errors.description && <span className="text-danger">{errors.description}</span>}
+                                </Form.Group>
+                            </Col>
+                            <Col xs={12}>
+                                <Form.Group>
+                                    <Form.Label>Start Date</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        value={currentEducation?.init_at || ''}
+                                        onChange={(e) => handleChange("init_at", e.target.value)}
+                                    />
+                                    {errors.init_at && <span className="text-danger">{errors.init_at}</span>}
+                                </Form.Group>
+                            </Col>
+                            <Col xs={12}>
+                                <Form.Group>
+                                    <Form.Label>Finish Date</Form.Label>
+                                    <Form.Control
+                                        type="date"
+                                        value={currentEducation?.finish_at || ''}
+                                        onChange={(e) => handleChange("finish_at", e.target.value)}
+                                    />
+                                    {errors.finish_at && <span className="text-danger">{errors.finish_at}</span>}
+                                </Form.Group>
+                            </Col>
+                            <Col xs={12}>
+                                <Form.Check
+                                    type="checkbox"
+                                    label="Finished"
+                                    checked={currentEducation?.finish || false}
+                                    onChange={(e) => handleChange("finish", e.target.checked)}
+                                />
+                            </Col>
+                        </Row>
+
+                        <div className="mt-4">
+                            <PrimaryButton type="submit" disabled={processing}>
+                                {editingIndex === null ? "Save Education" : "Update Education"}
+                            </PrimaryButton>
+                        </div>
+                    </Form>
+                </Modal.Body>
+            </Modal>
+        </div>
     );
 }

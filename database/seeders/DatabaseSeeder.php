@@ -97,39 +97,38 @@ class DatabaseSeeder extends Seeder
             'freelancer_id' => fn() => $freelancers->random()->id,
         ]);
 
-         // Crear extras de planes por defecto
-         $defaultExtras = DefaultPricingPlanExtra::factory(10)->create();
-         $defaultFeatures = DefaultPricingPlanFeature::factory(10)->create();
+        $defaultExtras = DefaultPricingPlanExtra::factory(10)->create();
+        $defaultFeatures = DefaultPricingPlanFeature::factory(10)->create();
 
-        $services->each(function($service) use ($categories, $tags,$defaultExtras,$defaultFeatures) {
+        // Crear servicios con relaciones
+        $services->each(function ($service) use ($categories, $tags, $defaultExtras, $defaultFeatures) {
             // Asignar categorías aleatorias al servicio
             $service->categories()->attach(
                 $categories->random(rand(1, 3))->pluck('id')
             );
-        
+
             // Asignar etiquetas aleatorias al servicio
             $service->tags()->attach(
                 $tags->random(rand(1, 3))->pluck('id')
             );
-        
-            // Crear un plan para el servicio
+
+            // Crear planes para el servicio
             $plan_basic = Plan::factory()->create([
                 'service_id' => $service->id,
-                'type' => 'basic', // O cualquier otro valor para el tipo de plan
+                'type' => 'basic',
             ]);
 
             $plan_standard = Plan::factory()->create([
                 'service_id' => $service->id,
-                'type' => 'standard', // O cualquier otro valor para el tipo de plan
+                'type' => 'standard',
             ]);
 
             $plan_premium = Plan::factory()->create([
                 'service_id' => $service->id,
-                'type' => 'premium', // O cualquier otro valor para el tipo de plan
+                'type' => 'premium',
             ]);
 
-
-            // Crear características de planes relacionadas con planes y características por defecto
+            // Crear características de planes
             PricingPlanFeature::factory(10)->create([
                 'plan_id' => fn() => $plan_basic->id,
                 'feature_id' => fn() => $defaultFeatures->random()->id,
@@ -144,11 +143,8 @@ class DatabaseSeeder extends Seeder
                 'plan_id' => fn() => $plan_premium->id,
                 'feature_id' => fn() => $defaultFeatures->random()->id,
             ]);
-    
-    
-          
-    
-            // Crear extras de planes relacionadas con planes y extras por defecto
+
+            // Crear extras de planes
             PricingPlanExtra::factory(10)->create([
                 'plan_id' => fn() => $plan_basic->id,
                 'extra_id' => fn() => $defaultExtras->random()->id,
@@ -183,12 +179,6 @@ class DatabaseSeeder extends Seeder
             'service_id' => fn() => $services->random()->id,
         ]);
 
-        // Crear planes relacionados con servicios
-       
-
-        // Crear características de planes por defecto
-      
-
         // Crear requisitos relacionados con servicios
         Requirement::factory(10)->create([
             'service_id' => fn() => $services->random()->id,
@@ -210,7 +200,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Crear órdenes relacionadas con freelancers, compradores y servicios
-        Order::factory(10)->create([
+        $orders = Order::factory(10)->create([
             'freelancer_id' => fn() => $freelancers->random()->id,
             'buyer_id' => fn() => Buyer::all()->random()->user_id,
             'service_id' => fn() => $services->random()->id,
@@ -242,9 +232,12 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Crear reseñas relacionadas con órdenes y usuarios
-        Review::factory(10)->create([
-            'order_id' => fn() => Order::all()->random()->id,
-            'reviewer_id' => fn() => $users->random()->id,
-        ]);
+        $orders->each(function ($order) use ($users) {
+            // Crear la reseña para cada orden
+            Review::factory()->create([
+                'order_id' => $order->id,
+                'reviewer_id' => $users->random()->id,
+            ]);
+        });
     }
 }

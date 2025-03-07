@@ -11,7 +11,7 @@ use App\Models\Freelancer;
 use App\Models\Skill;
 use App\Models\Education;
 use App\Models\JobExperience;
-use App\Models\Project;
+use App\Models\Portfolio;
 use App\Models\SkillLevel;
 use App\Models\Category;
 use App\Models\Tag;
@@ -33,8 +33,12 @@ use App\Models\CreditsPurchase;
 use App\Models\Billing;
 use App\Models\Chat;
 use App\Models\ChatMessage;
+use App\Models\Project;
 use App\Models\Review;
 use App\Models\WorkingHour;
+use App\Models\Proposal;
+use App\Models\Milestone;
+use App\Models\Task;
 
 class DatabaseSeeder extends Seeder
 {
@@ -76,7 +80,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         // Crear proyectos relacionados con freelancers
-        Project::factory(10)->create([
+        Portfolio::factory(10)->create([
             'freelancer_id' => fn() => $freelancers->random()->id,
         ]);
 
@@ -97,67 +101,25 @@ class DatabaseSeeder extends Seeder
             'freelancer_id' => fn() => $freelancers->random()->id,
         ]);
 
-        $defaultExtras = DefaultPricingPlanExtra::factory(10)->create();
-        $defaultFeatures = DefaultPricingPlanFeature::factory(10)->create();
+        // Crear proyectos (Para Proposals)
+        $projects = Project::factory(10)->create();
 
-        // Crear servicios con relaciones
-        $services->each(function ($service) use ($categories, $tags, $defaultExtras, $defaultFeatures) {
-            // Asignar categorías aleatorias al servicio
-            $service->categories()->attach(
-                $categories->random(rand(1, 3))->pluck('id')
-            );
+        // Crear propuestas relacionadas con proyectos, freelancers y servicios
+        $proposals = Proposal::factory(10)->create([
+            'project_id' => fn() => $projects->random()->id,
+            'freelancer_id' => fn() => $freelancers->random()->id,
+            'service_id' => fn() => $services->random()->id,
+        ]);
 
-            // Asignar etiquetas aleatorias al servicio
-            $service->tags()->attach(
-                $tags->random(rand(1, 3))->pluck('id')
-            );
-
-            // Crear planes para el servicio
-            $plan_basic = Plan::factory()->create([
-                'service_id' => $service->id,
-                'type' => 'basic',
-            ]);
-
-            $plan_standard = Plan::factory()->create([
-                'service_id' => $service->id,
-                'type' => 'standard',
-            ]);
-
-            $plan_premium = Plan::factory()->create([
-                'service_id' => $service->id,
-                'type' => 'premium',
-            ]);
-
-            // Crear características de planes
-            PricingPlanFeature::factory(10)->create([
-                'plan_id' => fn() => $plan_basic->id,
-                'feature_id' => fn() => $defaultFeatures->random()->id,
-            ]);
-
-            PricingPlanFeature::factory(10)->create([
-                'plan_id' => fn() => $plan_standard->id,
-                'feature_id' => fn() => $defaultFeatures->random()->id,
-            ]);
-
-            PricingPlanFeature::factory(10)->create([
-                'plan_id' => fn() => $plan_premium->id,
-                'feature_id' => fn() => $defaultFeatures->random()->id,
-            ]);
-
-            // Crear extras de planes
-            PricingPlanExtra::factory(10)->create([
-                'plan_id' => fn() => $plan_basic->id,
-                'extra_id' => fn() => $defaultExtras->random()->id,
-            ]);
-
-            PricingPlanExtra::factory(10)->create([
-                'plan_id' => fn() => $plan_standard->id,
-                'extra_id' => fn() => $defaultExtras->random()->id,
-            ]);
-
-            PricingPlanExtra::factory(10)->create([
-                'plan_id' => fn() => $plan_premium->id,
-                'extra_id' => fn() => $defaultExtras->random()->id,
+        // Crear milestones relacionados con las propuestas
+        $proposals->each(function ($proposal) {
+            Milestone::factory(rand(1, 5))->create([ // Creamos entre 1 y 5 hitos por propuesta
+                'proposal_id' => $proposal->id,
+                'title' => 'Hito para ' . $proposal->title,
+                'description' => 'Descripción del hito',
+                'cost' => rand(50, 500),
+                'duration' => rand(1, 15), // Duración entre 1 y 15 días
+                'status' => 'pending', // Estado predeterminado
             ]);
         });
 
@@ -238,6 +200,27 @@ class DatabaseSeeder extends Seeder
                 'order_id' => $order->id,
                 'reviewer_id' => $users->random()->id,
             ]);
+        });
+
+        $projects->each(function($project) use ($freelancers,$services){
+            $skills = Skill::all()->random(rand(1, 5));  // Asigna entre 1 y 5 habilidades aleatorias
+            $project->skills()->attach($skills);
+            // Crear entre 1 y 5 tareas aleatorias para el proyecto
+            Task::factory()->count(rand(1, 5))->create([
+                'project_id' => $project->id,  // Asignar el proyecto creado
+            ]);
+
+            $proposal = Proposal::factory()->create([
+                'project_id' => $project->id,  // Asignar el proyecto creado
+                "freelancer_id" => $freelancers->random()->id,
+                "service_id" => $freelancers->random()->id,
+            ]);
+
+            Milestone::factory()->count(rand(1, 5))->create([
+                'proposal_id' => $proposal->id, 
+            ]);
+
+
         });
     }
 }

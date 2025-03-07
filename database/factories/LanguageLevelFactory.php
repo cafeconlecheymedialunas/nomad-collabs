@@ -1,10 +1,7 @@
 <?php
-
 namespace Database\Factories;
 
-use App\Models\Language;
 use App\Models\LanguageLevel;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LanguageLevelFactory extends Factory
@@ -15,10 +12,10 @@ class LanguageLevelFactory extends Factory
     {
         return [
             'language' => $this->faker->word,
-            'level' => $this->faker->randomElement(['beginner', 'intermediate', 'advanced', 'fluent']),
+            'level' => $this->faker->randomElement(['Beginner', 'Intermediate', 'Advanced']),
             'can_work' => $this->faker->boolean,
-            'language_id' => Language::factory(),
-            'user_id' => User::factory(),
+            'language_id' => \App\Models\Language::factory(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

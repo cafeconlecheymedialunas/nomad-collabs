@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string("country")->nullable();
             $table->text("description")->nullable();
             $table->boolean("current")->default(false);
+            $table->timestamps();
            
         });
     }

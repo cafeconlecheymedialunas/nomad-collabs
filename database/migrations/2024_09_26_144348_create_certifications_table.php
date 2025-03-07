@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string("type");
             $table->string("institution");
             $table->string("title");
-            $table->string("description");
+            $table->text("description");
             $table->string("file");
             $table->timestamps();
         });

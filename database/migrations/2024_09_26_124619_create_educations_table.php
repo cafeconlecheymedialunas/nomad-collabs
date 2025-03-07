@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string("title");
             $table->date("init_at");
             $table->date("finish_at");
-            $table->string("description");
+            $table->text("description");
             $table->boolean("finished");
             $table->timestamps();
         });

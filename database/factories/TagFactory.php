@@ -1,11 +1,7 @@
 <?php
-
-// database/factories/TagFactory.php
-
 namespace Database\Factories;
 
 use App\Models\Tag;
-use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class TagFactory extends Factory
@@ -16,7 +12,6 @@ class TagFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
-            'service_id' => Service::factory(),
         ];
     }
 }

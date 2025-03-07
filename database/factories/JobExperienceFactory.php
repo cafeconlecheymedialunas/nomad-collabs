@@ -2,30 +2,24 @@
 
 namespace Database\Factories;
 
-use App\Models\Freelancer;
+// JobExperienceFactory.php
+use App\Models\JobExperience;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-/**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\JobExperience>
- */
 class JobExperienceFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    protected $model = JobExperience::class;
+
+    public function definition()
     {
         return [
-            'freelancer_id' => Freelancer::factory(),
-            'title' => $this->faker->word,
-            'type_of_job' => $this->faker->word,
-            'company_type' => $this->faker->word,
-            'company_name' => $this->faker->company,
-            'country' => $this->faker->country,
-            'start' => $this->faker->date,
-            'end' => $this->faker->date,
+            'freelancer_id' => \App\Models\Freelancer::factory(),
+            'title' => $this->faker->jobTitle,
+            'company' => $this->faker->company,
+            'type' => $this->faker->randomElement(['Full-time', 'Part-time', 'Contract']),
+            'location' => $this->faker->address,
+            'init_at' => $this->faker->date,
+            'finish_at' => $this->faker->date,
             'description' => $this->faker->paragraph,
             'current' => $this->faker->boolean,
         ];

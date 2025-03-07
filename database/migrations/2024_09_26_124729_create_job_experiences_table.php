@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string("location");
             $table->date("init_at");
             $table->date("finish_at");
-            $table->text("location");
+    
             $table->text("description");
             $table->boolean("current");
             $table->timestamps();

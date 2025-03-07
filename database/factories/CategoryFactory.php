@@ -4,7 +4,6 @@
 namespace Database\Factories;
 
 use App\Models\Category;
-use App\Models\Service;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CategoryFactory extends Factory
@@ -15,11 +14,9 @@ class CategoryFactory extends Factory
     {
         return [
             'title' => $this->faker->word,
-            'description' => $this->faker->text,
+            'description' => $this->faker->paragraph,
             'slug' => $this->faker->slug,
             'image' => $this->faker->imageUrl(),
-            'service_id' => Service::factory(), // This assumes you have a Service factory
         ];
     }
 }
-

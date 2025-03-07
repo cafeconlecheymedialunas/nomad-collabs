@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('billing', function (Blueprint $table) {
+        Schema::create('billings', function (Blueprint $table) {
             $table->id();
             $table->dateTime('date');
             $table->integer('total');
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('billing');
+        Schema::dropIfExists('billings');
     }
 };

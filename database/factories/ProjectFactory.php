@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Project;
-use App\Models\Freelancer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ProjectFactory extends Factory
@@ -13,10 +12,10 @@ class ProjectFactory extends Factory
     public function definition()
     {
         return [
-            'freelancer_id' => Freelancer::factory(), // Suponiendo que tienes un factory para Freelancer
+            'freelancer_id' => \App\Models\Freelancer::factory(),
             'title' => $this->faker->sentence,
-            'start' => $this->faker->date(),
-            'end' => $this->faker->date(),
+            'start' => $this->faker->date,
+            'end' => $this->faker->date,
             'company' => $this->faker->company,
             'country' => $this->faker->country,
             'description' => $this->faker->paragraph,
@@ -24,4 +23,5 @@ class ProjectFactory extends Factory
         ];
     }
 }
+
 

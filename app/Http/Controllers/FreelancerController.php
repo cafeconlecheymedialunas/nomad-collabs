@@ -2,115 +2,61 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFreelancerRequest;
 use App\Models\Freelancer;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\UpdateFreelancerRequest;
 use Inertia\Inertia;
 
 class FreelancerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Muestra la información del freelancer.
      */
-    public function index()
+    public function show($id)
     {
-        $freelancers = Freelancer::all();
-        return Inertia::render('Profile/Index', [
-            "freelancers" => $freelancers,
-            "auth" => auth()->user()
+        $freelancer = Freelancer::findOrFail($id);
 
+        return Inertia::render('Freelancer/Show', [
+            'freelancer' => $freelancer,
         ]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Muestra el formulario de edición para el freelancer.
      */
-    public function create()
+    public function edit($id)
     {
-        return Inertia::render('Profile/Create', ["user" => auth()->user()]);
-    }
+        $freelancer = Freelancer::findOrFail($id);
 
-
-
-    public function store(StoreFreelancerRequest $request)
-    {
-
-        $data = $request->validated();
-
-        if ($request->hasFile('cover')) {
-            $coverPath = $request->file('cover')->store('covers', 'public');
-            $data['cover'] = $coverPath;
-        }
-
-        $freelancer = Freelancer::create($data);
-
-        // Redirigir al perfil del freelancer con un mensaje de éxito
-        return redirect()->route('freelancer.edit', $freelancer->id)
-            ->with('success', 'Freelancer profile created successfully!');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Freelancer $freelancer)
-    {
-       $freelancer = $freelancer->load(["educations","jobExperiences","educations","user"]);
-
-        return Inertia::render(
-            'Profile/Edit',
-            [
-                "user" => auth()->user(),
-                "freelancer" => $freelancer
-            ]
-        );
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Freelancer $freelancer)
-    {
-        $validatedData = $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'state' => 'required|string|max:255',
-            'city' => 'nullable|string|max:255',
-            'post_code' => 'nullable|string|max:20',
-            'address' => 'nullable|string|max:255',
-            'nick_name' => 'required|string|max:255|unique:freelancers,nick_name,' . $freelancer->id, // Ignorar el nick_name actual
-            'description' => 'required|string',
-            'display_name' => 'required|string|max:255',
-            'country_origin' => 'required|string|max:255',
-            'country_residence' => 'required|string|max:255',
-            'video' => 'nullable|url',
-            'cover' => 'nullable|url',
+        return Inertia::render('Profile/Edit', [
+            'freelancer' => $freelancer,
         ]);
-
-        // Buscar el freelancer por su ID
-
-
-        // Actualizar el freelancer con los datos validados
-        $freelancer->update($validatedData);
-
-        // Redirigir con un mensaje de éxito
-        return redirect()->route('freelancer.edit', $freelancer->id)->with('success', 'Freelancer updated successfully.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Actualiza la información del freelancer.
      */
-    public function destroy(string $id)
+    public function update(UpdateFreelancerRequest $request, $id)
     {
-        //
+        $freelancer = Freelancer::findOrFail($id);
+
+        // Actualiza el freelancer con los datos validados
+        $freelancer->update($request->validated());
+
+        return redirect()->route('freelancers.edit', $freelancer->id)
+            ->with('success', 'Perfil actualizado correctamente');
+    }
+
+    /**
+     * Elimina el freelancer.
+     */
+    public function destroy($id)
+    {
+        $freelancer = Freelancer::findOrFail($id);
+
+
+        $freelancer->delete();
+
+        return redirect()->route('freelancers.index')
+            ->with('success', 'Perfil eliminado correctamente');
     }
 }

@@ -32,7 +32,7 @@ const NotificationDropdown = () => {
                     </div>
 
                     <div className="d-grid">
-                        <a href="page-dashboard-message.html" className="ud-btn btn-thm w-100">
+                        <a href={route("dashboard")} className="ud-btn btn-thm w-100">
                             View All Messages <i className="fal fa-arrow-right-long" />
                         </a>
                     </div>

@@ -21,6 +21,7 @@
     "dependencies": {
         "@popperjs/core": "^2.11.8",
         "bootstrap": "^5.3.3",
+        "magnific-popup": "^1.2.0",
         "react-bootstrap": "^2.10.9",
         "react-icons": "^5.5.0"
     }

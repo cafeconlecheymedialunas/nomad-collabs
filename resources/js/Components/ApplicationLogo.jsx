@@ -7,7 +7,7 @@ export default function ApplicationLogo({ src = "", className = "", alt = "",...
             {...props}
 
             className={
-                ' ' +
+                'btn ' +
                 className
             }
 

@@ -23,13 +23,14 @@ class BuyerSeeder extends Seeder
     public function run(): void
     {
         // Crear 10 usuarios
-        $users = User::factory(10)->create();
+   
 
         $buyers = collect([]);
         $services = Service::all();
         $skills = Skill::all();
-
+        $users = User::all();
         $freelancers = Freelancer::all();
+
         // Recorrer cada usuario
         $users->each(function ($user) use ($buyers,$services,$skills,$freelancers) {
             // Asignar un método de pago aleatorio

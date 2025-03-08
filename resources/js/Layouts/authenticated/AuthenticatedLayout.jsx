@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 
 import Modal from '@/Components/Modal';
 import Header from './Header';
-import SearchModal from './SearchModal';
+import SearchModal from '../SearchModal';
 import Sidebar from './Sidebar';
 import Footer from './Footer';
-import Menu from './Menu';
+import Menu from '../Menu';
 import { FaAngleUp } from 'react-icons/fa';
 
 export default function Authenticated({ user, header, freelancer, children }) {

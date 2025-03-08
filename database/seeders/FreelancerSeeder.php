@@ -30,8 +30,9 @@ class FreelancerSeeder extends Seeder
      */
     public function run(): void
     {
-        $users = User::factory(10)->create();
+      
 
+        $users = User::all();
         $freelancers = collect([]);
 
         $languages = Language::all();

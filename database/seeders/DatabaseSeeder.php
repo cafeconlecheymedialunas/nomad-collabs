@@ -12,7 +12,7 @@ use App\Models\Category;
 use App\Models\Tag;
 
 use App\Models\PaymentMethod;
-
+use App\Models\User;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,7 +25,12 @@ class DatabaseSeeder extends Seeder
         PaymentMethod::factory(3)->create();
         Skill::factory(20)->create();
         Tag::factory(10)->create();
-
+        User::factory(10)->create();
+        User::factory()->create([
+            'name' => 'Mauro Developer',
+            'email' => 'maurodeveloper86@gmail.com',
+            'password' => bcrypt('arselocura1234'),
+        ]);
         // Crear preguntas frecuentes relacionadas con servicios
 
         $categoriesData = DefaultValues::default("categories");
@@ -72,15 +77,16 @@ class DatabaseSeeder extends Seeder
     
 
 
-        $login_seeder = new LoginAdminSeeder();
-        $freelancer_seeder = new FreelancerSeeder();
-        $buyer_seeder = new BuyerSeeder();
-        $order_seeder = new OrderSeeder();
+    
+        $this->call([
+            FreelancerSeeder::class,
+            BuyerSeeder::class,
+            OrderSeeder::class,
+        ]);
 
-        $login_seeder->run();
-        $freelancer_seeder->run();
-        $buyer_seeder->run();
-        $order_seeder->run();
+        
+       
+       
     }
 
     // Array con las categorías principales y sus subcategorías

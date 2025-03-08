@@ -1,4 +1,4 @@
-import GuestLayout from '@/Layouts/GuestLayout';
+import AuthLayout from '@/Layouts/auth/AuthLayout';
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
 import TextInput from '@/Components/TextInput';
@@ -11,40 +11,61 @@ export default function ForgotPassword({ status }) {
 
     const submit = (e) => {
         e.preventDefault();
-
         post(route('password.email'));
     };
 
     return (
-        <GuestLayout>
+        <AuthLayout>
             <Head title="Forgot Password" />
+            <section className="our-register">
+                <div className="container">
+                    <div className="row">
+                        <div className="col-lg-6 m-auto">
+                            <div className="main-title text-center">
+                                <h2 className="title">Forgot Password?</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-xl-6 mx-auto">
+                            <div className="log-reg-form search-modal form-style1 bg-white p-5 shadow-sm rounded">
+                                <div className="mb-4">
+                                    <div className="text-muted">
+                                        Forgot your password? No problem. Just let us know your email address and we will email you a password
+                                        reset link that will allow you to choose a new one.
+                                    </div>
+                                </div>
 
-            <div className="mb-4 text-sm text-gray-600">
-                Forgot your password? No problem. Just let us know your email address and we will email you a password
-                reset link that will allow you to choose a new one.
-            </div>
+                                {status && (
+                                    <div className="mb-4 text-success">{status}</div>
+                                )}
 
-            {status && <div className="mb-4 font-medium text-sm text-green-600">{status}</div>}
+                                <form onSubmit={submit}>
+                                    <div className="mb-3">
+                                        <label htmlFor="email" className="form-label">Email Address</label>
+                                        <TextInput
+                                            id="email"
+                                            type="email"
+                                            name="email"
+                                            value={data.email}
+                                            className="form-control"
+                                            isFocused={true}
+                                            onChange={(e) => setData('email', e.target.value)}
+                                        />
+                                        <InputError message={errors.email} className="mt-2 text-danger" />
+                                    </div>
 
-            <form onSubmit={submit}>
-                <TextInput
-                    id="email"
-                    type="email"
-                    name="email"
-                    value={data.email}
-                    className="mt-1 block w-full"
-                    isFocused={true}
-                    onChange={(e) => setData('email', e.target.value)}
-                />
-
-                <InputError message={errors.email} className="mt-2" />
-
-                <div className="flex items-center justify-end mt-4">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Email Password Reset Link
-                    </PrimaryButton>
+                                    <div className="d-flex justify-content-end mt-4">
+                                        <PrimaryButton className="ms-3" disabled={processing}>
+                                            Email Password Reset Link
+                                        </PrimaryButton>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
-        </GuestLayout>
+            </section>
+        </AuthLayout>
     );
 }

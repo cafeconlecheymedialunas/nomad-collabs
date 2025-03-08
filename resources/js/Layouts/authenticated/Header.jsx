@@ -4,6 +4,7 @@ import MessageNotifications from '@/Components/MessagesNotification';
 import UserDropdownMenu from '@/Components/UserDropdownMenu';
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
+import LogoutLink from '@/Components/LogoutLink';
 
 export default function Header({onToggleSidebar,user,freelancer}){
     return (
@@ -24,6 +25,7 @@ export default function Header({onToggleSidebar,user,freelancer}){
                                     <img src="https://creativelayers.net/themes/freeio-html/images/dashboard-navicon.svg" />
                                 </a>
                             </div>
+                            <LogoutLink/>
                             <a className="login-info d-block d-xl-none ml40 vam" data-bs-toggle="modal" href="#exampleModalToggle" role="button"><span className="flaticon-loupe" /></a>
                             <div className="ml40 d-none d-xl-block">
                                 <div className="search_area dashboard-style">

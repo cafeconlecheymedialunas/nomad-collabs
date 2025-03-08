@@ -8,15 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentMethod extends Model
 {
     use HasFactory;
-
+    protected $table = "payment_methods";
+    
     protected $fillable = [
-        'card_number',
-        'card_expiration_date',
-        'card_security_code',
-        'card_calholders_name',
-        'paypal_email',
-        'mercado_pago_email',
-        'stripe_email',
+        'email', 
+        'public_key', 
+        'secret_key', 
+        'type', 
         'user_id',
     ];
 

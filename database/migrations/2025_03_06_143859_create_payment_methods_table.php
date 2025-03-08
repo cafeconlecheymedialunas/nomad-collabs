@@ -13,20 +13,14 @@ return new class extends Migration
     {
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->id();
-         
-
-            $table->string("card_number");
-            $table->string("card_expiration_date");
-            $table->string("card_security_code");
-            $table->string("card_calholders_name");
-            $table->string("paypal_email");
-            $table->string("mercado_pago_email");
-            $table->string("stripe_email");
-
-            $table->foreignId('user_id')->references('id')->on('users')->onDelete("cascade"); 
-
+            $table->string("email");
+            $table->string("public_key");
+            $table->string("secret_key");
+            $table->enum('type', ['paypal', 'mercado_pago', 'stripe']);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
+
     }
 
     /**

@@ -9,14 +9,18 @@ class Milestone extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+       // Definir los campos que pueden ser asignados en masa
+       protected $fillable = [
         'proposal_id',
         'title',
         'description',
         'cost',
         'duration',
-        'status'
+        'init_at',
+        'finish_at',
+        'status',
     ];
+
 
     // Relación con Proposal: Un milestone pertenece a una propuesta
     public function proposal()

@@ -26,8 +26,8 @@ class WalletWithdraw extends Model
         return $this->belongsTo(Wallet::class);
     }
 
-    public function billing()
+    public function payment()
     {
-        return $this->morphOne(Billing::class, 'billable');
+        return $this->morphOne(Payment::class, 'billable');
     }
 }

@@ -13,15 +13,36 @@ return new class extends Migration
     {
         Schema::create('proposals', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('project_id')->constrained('projects')->onDelete('cascade');
+            $table->foreignId('project_id')->nullable()->constrained('projects')->onDelete('cascade');
             $table->foreignId('freelancer_id')->constrained('freelancers')->onDelete('cascade');
-            $table->foreignId('service_id')->constrained('services')->onDelete('cascade'); 
+            $table->foreignId('buyer_id')->constrained('buyers')->onDelete('cascade'); 
+            $table->foreignId('service_id')->nullable()->constrained('services')->onDelete('cascade'); 
+            $table->foreignId('parent_proposal_id')->nullable()->constrained('proposals')->onDelete('cascade'); // Referencia a la propuesta 
+            $table->enum("proposal_type",["standard","custom_order"]);
+            $table->enum("execution_type",["fixed","milestones"])->default("fixed");
+        
+        
             $table->text("description");
-            $table->enum("proposal_type",["fixed","milestones"])->default("fixed");
-            $table->integer("estimated_duration");
-           
-            $table->decimal("estimated_cost", 10, 2);
-            $table->enum("revisions",[1,2,3,4,5,6,7,8,9,10]);
+            $table->text('project_overview')->nullable();
+            $table->text('revision_details')->nullable(); // Detalles de revisiones
+            $table->text('communication_plan')->nullable();
+            $table->string('status_update_frequency')->nullable();
+            $table->string('references')->nullable();
+
+            $table->text("deliverables")->nullable(); 
+            $table->text('technology_stack')->nullable();
+            $table->text('project_goals')->nullable(); 
+            
+            
+            $table->integer("revisions");
+            $table->decimal("cost", 10, 2);
+            $table->integer("duration");
+            $table->timestamp("contract_start_date")->nullable(); // Fecha de inicio del contrato
+            $table->timestamp("contract_end_date")->nullable();
+         
+
+
+            $table->enum('payment_method', ['fixed', 'milestone_based'])->default('fixed');
             $table->timestamps();
         });
     }

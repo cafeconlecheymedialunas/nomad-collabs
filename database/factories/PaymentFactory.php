@@ -2,12 +2,12 @@
 
 namespace Database\Factories;
 
-use App\Models\Billing;
+use App\Models\Payment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class BillingFactory extends Factory
+class PaymentFactory extends Factory
 {
-    protected $model = Billing::class;
+    protected $model = Payment::class;
 
     public function definition()
     {
@@ -17,8 +17,8 @@ class BillingFactory extends Factory
             'invoice_url' => $this->faker->url,
             'currency' => $this->faker->currencyCode,
             'payment_method_id' => \App\Models\PaymentMethod::factory(),
-            'billable_id' => $this->faker->numberBetween(1, 100),
-            'billable_type' => $this->faker->randomElement(['App\Models\Order', 'App\Models\CreditsPurchase']),
+            'order_id' => \App\Models\Order::factory(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

@@ -43,10 +43,24 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function freelancer(){
+        return $this->belongsTo(Freelancer::class);
+    }
+
+    public function buyer(){
+        return $this->belongsTo(Buyer::class);
+    }
+
     public function workingHours()
     {
         return $this->hasMany(WorkingHour::class);
     }
+
+    public function paymentMethods()
+    {
+        return $this->hasMany(PaymentMethod::class);
+    }
+
 
     public function chats()
     {

@@ -31,6 +31,18 @@ class Category extends Model
     {
         return $this->morphMany(File::class, 'fileable');
     }
+
+      // Relación con la categoría padre
+      public function parent()
+      {
+          return $this->belongsTo(Category::class, 'parent_id');
+      }
+  
+      // Relación con las categorías hijas
+      public function children()
+      {
+          return $this->hasMany(Category::class, 'parent_id');
+      }
 }
 
 

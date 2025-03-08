@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\PaymentMethod;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaymentMethodFactory extends Factory
@@ -12,14 +13,12 @@ class PaymentMethodFactory extends Factory
     public function definition()
     {
         return [
-            'card_number' => $this->faker->creditCardNumber,
-            'card_expiration_date' => $this->faker->creditCardExpirationDate,
-            'card_security_code' => $this->faker->randomNumber(3),
-            'card_calholders_name' => $this->faker->name,
-            'paypal_email' => $this->faker->email,
-            'mercado_pago_email' => $this->faker->email,
-            'stripe_email' => $this->faker->email,
-            'user_id' => \App\Models\User::factory(),
+            'email' => $this->faker->unique()->safeEmail, // Correo electrónico generado aleatoriamente
+            'public_key' => $this->faker->word, // Aquí deberías usar un valor de prueba
+            'secret_key' => $this->faker->word, // Aquí también deberías usar un valor de prueba
+            'type' => $this->faker->randomElement(['paypal', 'mercado_pago', 'stripe']), // Tipo aleatorio de método de pago
+            'user_id' => User::factory(), // Relación con un usuario creado por la fábrica de usuarios
         ];
     }
+
 }

@@ -18,11 +18,10 @@ return new class extends Migration
             
             $table->foreignId('buyer_id')->constrained('users')->onDelete('cascade');
             
-            $table->foreignId('service_id')->constrained('services')->onDelete('cascade');
+            $table->foreignId('proposal_id')->constrained('proposals')->onDelete('cascade');
             
-            $table->integer('total');
-            $table->dateTime('date');
             $table->string('sku', 20)->unique();
+            
             $table->timestamps();
         });
         

@@ -26,8 +26,8 @@ class CreditsPurchase extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function billing()
+    public function payment()
     {
-        return $this->morphOne(Billing::class, 'billable');
+        return $this->morphOne(Payment::class, 'billable');
     }
 }

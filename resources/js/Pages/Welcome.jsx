@@ -243,7 +243,7 @@ export default function Welcome({ auth, laravelVersion, phpVersion }) {
                                         help you take your projects to the next level. Pair them with powerful open
                                         source libraries like{' '}
                                         <a
-                                            href="https://laravel.com/docs/billing"
+                                            href="https://laravel.com/docs/payment"
                                             className="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500"
                                         >
                                             Cashier

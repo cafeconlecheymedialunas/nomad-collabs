@@ -14,10 +14,11 @@ class OrderFactory extends Factory
         return [
             'freelancer_id' => \App\Models\User::factory(),
             'buyer_id' => \App\Models\User::factory(),
-            'service_id' => \App\Models\Service::factory(),
-            'total' => $this->faker->numberBetween(100, 10000),
-            'date' => $this->faker->dateTime,
+            'proposal_id' => \App\Models\Proposal::factory(),
             'sku' => $this->faker->unique()->bothify(str_repeat('?', 20)),
         ];
+
+       
     }
+
 }

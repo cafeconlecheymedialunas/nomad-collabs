@@ -12,11 +12,10 @@ class Order extends Model
     protected $fillable = [
         'freelancer_id',
         'buyer_id',
-        'service_id',
-        'total',
-        'date',
-        'operation_id',
+        'proposal_id',
+        'sku',
     ];
+    
 
     /**
      * Relación con el modelo Freelancer
@@ -45,9 +44,9 @@ class Order extends Model
         return $this->belongsTo(Service::class);
     }
 
-    public function billing()
+    public function payment()
     {
-        return $this->morphOne(Billing::class, 'billable');
+        return $this->morphOne(Payment::class, 'billable');
     }
 
     

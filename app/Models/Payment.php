@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Billing extends Model
+class Payment extends Model
 {
     use HasFactory;
 
@@ -15,8 +15,8 @@ class Billing extends Model
         'invoice_url',
         'currency',
         'payment_method_id',
-        'billable_id',
-        'billable_type',
+        'order_id',
+        'user_id',
     ];
 
     // Relación polimórfica con las operaciones que pueden tener facturas

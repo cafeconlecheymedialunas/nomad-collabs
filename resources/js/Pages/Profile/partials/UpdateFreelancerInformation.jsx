@@ -5,9 +5,9 @@ import CoverImageUpload from '@/Components/CoverImageUpload';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { Form, Col } from 'react-bootstrap';
 
-export default function UpdateFreelancerForm({ className = '', user, freelancer }) {
+export default function UpdateFreelancerForm({ className = '',freelancer }) {
     const { data, setData, post, put, errors, processing, recentlySuccessful } = useForm({
-        user_id: user.id,
+        user_id: freelancer?.user.id,
         first_name: freelancer?.first_name || '',
         last_name: freelancer?.last_name || '',
         state: freelancer?.state || '',

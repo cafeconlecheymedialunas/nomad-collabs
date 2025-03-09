@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('freelancer_id')->references('id')->on('freelancers'); 
             $table->foreignId('skill_id')->references('id')->on('skills'); 
-            $table->enum('level',[1,2,3,4,5,6,7,8,9,10]);
+            $table->enum('level',["beginner","intermediate","pro"]);
 
             $table->timestamps();
         });

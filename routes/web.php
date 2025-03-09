@@ -42,16 +42,17 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    // Usar Route::resource para generar las rutas necesarias
     Route::resource('freelancer', FreelancerController::class);
+
     Route::prefix('freelancer/{freelancer}')->group(function () {
-        Route::resource('education', EducationController::class)->only(["store", "update", "destroy"])
+        Route::resource('education', EducationController::class)->only(['store', 'update', 'destroy'])
             ->names([
                 'store' => 'freelancer.education.store',
                 'update' => 'freelancer.education.update',
                 'destroy' => 'freelancer.education.destroy',
             ]);
-        Route::resource('job-experience', JobExperienceController::class)->only(["store", "update", "destroy"])
+
+        Route::resource('job-experience', JobExperienceController::class)->only(['store', 'update', 'destroy'])
             ->names([
                 'store' => 'freelancer.job-experience.store',
                 'update' => 'freelancer.job-experience.update',
@@ -59,5 +60,6 @@ Route::middleware('auth')->group(function () {
             ]);
     });
 });
+
 
 require __DIR__ . '/auth.php';

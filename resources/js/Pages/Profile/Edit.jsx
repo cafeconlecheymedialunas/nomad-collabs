@@ -7,13 +7,14 @@ import AuthenticatedLayout from '@/Layouts/authenticated/AuthenticatedLayout';
 import EducationForm from './partials/EducationForm';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import JobExperienceForm from './partials/JobExperienceForm';
+import SkillLevelForm from './partials/SkillLevelForm';
 
-const Edit = ({ user, freelancer}) => {
+const Edit = ({freelancer,skills}) => {
 
     
     return (
         <AuthenticatedLayout
-            user={user}
+            user={freelancer.user}
             freelancer={freelancer}
             header={<h2 className="text-center text-primary">Account</h2>}
         >
@@ -33,7 +34,7 @@ const Edit = ({ user, freelancer}) => {
                                 <h5 className="list-title">Profile Details</h5>
                             </div>
                             <div className="col-12">
-                                <UpdateFreelancerInformation user={user} freelancer={freelancer} />
+                                <UpdateFreelancerInformation freelancer={freelancer} />
                             </div>
                         </div>
                     </div>
@@ -49,6 +50,13 @@ const Edit = ({ user, freelancer}) => {
                     <div className="col-xl-12">
                         <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">           
                             <JobExperienceForm freelancer={freelancer} />        
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xl-12">
+                        <div className="ps-widget bgc-white bdrs4 p30 mb30 overflow-hidden position-relative">           
+                            <SkillLevelForm freelancer={freelancer} skills={skills}/>        
                         </div>
                     </div>
                 </div>

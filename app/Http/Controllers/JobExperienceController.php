@@ -13,10 +13,10 @@ class JobexperienceController extends Controller
     /**
      * Guardar una nueva educación.
      */
-    public function store(StoreJobexperienceRequest $request, Freelancer $freelancer)
+    public function store(StoreJobexperienceRequest $request, Freelancer $freelancer,JobExperience $job_experience )
     {
 
-        $freelancer->jobexperiences()->create($request->validated());
+        $job_experience->create($request->validated());
 
         return redirect()->route('freelancer.edit', $freelancer->id)
                          ->with('success', 'Educación creada exitosamente.');
@@ -25,11 +25,10 @@ class JobexperienceController extends Controller
     /**
      * Actualizar una educación existente.
      */
-    public function update(UpdateJobexperienceRequest $request, Freelancer $freelancer, Jobexperience $jobexperience)
+    public function update(UpdateJobexperienceRequest $request, Freelancer $freelancer, Jobexperience $job_experience)
     {
 
-      
-        $job = $jobexperience->update($request->validated());
+        $job_experience->update($request->validated());
 
         return redirect()->route('freelancer.edit', $freelancer->id)->with('success', 'Jobexperience updated successfully.');
     }
@@ -37,10 +36,10 @@ class JobexperienceController extends Controller
     /**
      * Eliminar una educación.
      */
-    public function destroy(Freelancer $freelancer, Jobexperience $jobexperience)
+    public function destroy(Freelancer $freelancer, Jobexperience $job_experience)
     {
 
-        $jobexperience->delete();
+        $job_experience->delete();
 
         return redirect()->route('freelancer.edit', $freelancer->id)->with('success', 'Jobexperience removed successfully.');
     }

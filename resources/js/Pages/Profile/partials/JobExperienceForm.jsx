@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useForm, usePage } from "@inertiajs/react";
-import { FaPlus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
+import { FaPlus, FaPencil, FaRegTrashCan, FaAngleRight, FaAngleLeft } from "react-icons/fa6";
 import { Button, Modal, Form, Row, Col } from "react-bootstrap";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { router } from '@inertiajs/react';
 import SecondaryButton from "@/Components/SecondaryButton";
+import InputError from "@/Components/InputError";
 
 export default function JobexperienceForm({ freelancer }) {
 
@@ -12,14 +13,14 @@ export default function JobexperienceForm({ freelancer }) {
     const [editingIndex, setEditingIndex] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
-    const { 
-        data, 
-        setData, 
-        post, 
-        put, 
-        destroy, 
-        errors, 
-        processing 
+    const {
+        data,
+        setData,
+        post,
+        put,
+        delete: destroy,
+        errors,
+        processing
     } = useForm({
         id: null,
         title: '',
@@ -32,9 +33,6 @@ export default function JobexperienceForm({ freelancer }) {
         current: false,
         freelancer_id: freelancer?.id ?? ''
     });
-
-
-    console.log(errors)
 
     // Abrir modal para agregar experiencia laboral
     const addJobexperience = () => {
@@ -67,13 +65,26 @@ export default function JobexperienceForm({ freelancer }) {
 
         if (editingIndex === null) {
             // Agregar nuevo
-            post(router("freelancer.job-experience.store", { freelancer: freelancer.id }));
+            post(
+                route("freelancer.job-experience.store", { freelancer: freelancer.id }),
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setModalOpen(false)
+                    }
+                }
+            );
         } else {
             // Editar existente
-            put(route("freelancer.job-experience.update", {
-                freelancer: freelancer.id,
-                job_experience: data.id
-            }));
+            put(
+                route("freelancer.job-experience.update", { freelancer: freelancer.id, job_experience: data.id }),
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setModalOpen(false)
+                    }
+                }
+            );
         }
     };
 
@@ -85,11 +96,17 @@ export default function JobexperienceForm({ freelancer }) {
 
     // Eliminar experiencia laboral después de confirmar
     const confirmRemoveJobexperience = () => {
+        console.log(data.id)
         if (data.id) {
-            destroy(route("freelancer.job-experience.destroy", {
-                freelancer: freelancer.id,
-                job_experience: data.id
-            }));
+            destroy(
+                route("freelancer.job-experience.destroy", { freelancer: freelancer.id, job_experience: data.id }),
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setConfirmModalOpen(false)
+                    }
+                }
+            );
         }
     };
 
@@ -147,6 +164,8 @@ export default function JobexperienceForm({ freelancer }) {
                         </div>
                     ))}
                 </div>
+            
+
             </div>
 
             {/* Modal para agregar/editar experiencia laboral */}
@@ -166,9 +185,7 @@ export default function JobexperienceForm({ freelancer }) {
                                         onChange={(e) => handleChange("title", e.target.value)}
                                         isInvalid={!!errors.title}
                                     />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.title}
-                                    </Form.Control.Feedback>
+                                    <InputError message={errors.title} className="mt-2" />
                                 </Form.Group>
                             </Col>
                             <Col sm={6} className="mb-2">
@@ -180,9 +197,7 @@ export default function JobexperienceForm({ freelancer }) {
                                         onChange={(e) => handleChange("type", e.target.value)}
                                         isInvalid={!!errors.type}
                                     />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.type}
-                                    </Form.Control.Feedback>
+                                    <InputError message={errors.type} className="mt-2" />
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -197,9 +212,7 @@ export default function JobexperienceForm({ freelancer }) {
                                         onChange={(e) => handleChange("company", e.target.value)}
                                         isInvalid={!!errors.company}
                                     />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.company}
-                                    </Form.Control.Feedback>
+                                    <InputError message={errors.company} className="mt-2" />
                                 </Form.Group>
                             </Col>
                             <Col sm={6} className="mb-2">
@@ -211,9 +224,7 @@ export default function JobexperienceForm({ freelancer }) {
                                         onChange={(e) => handleChange("location", e.target.value)}
                                         isInvalid={!!errors.location}
                                     />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.location}
-                                    </Form.Control.Feedback>
+                                    <InputError message={errors.location} className="mt-2" />
                                 </Form.Group>
                             </Col>
                         </Row>
@@ -228,9 +239,7 @@ export default function JobexperienceForm({ freelancer }) {
                                         onChange={(e) => handleChange("init_at", e.target.value)}
                                         isInvalid={!!errors.init_at}
                                     />
-                                    <Form.Control.Feedback type="invalid">
-                                        {errors.init_at}
-                                    </Form.Control.Feedback>
+                                    <InputError message={errors.init_at} className="mt-2" />
                                 </Form.Group>
                             </Col>
                             <Col sm={6} className="mb-2">
@@ -253,9 +262,7 @@ export default function JobexperienceForm({ freelancer }) {
                                             onChange={(e) => handleChange("finish_at", e.target.value)}
                                             isInvalid={!!errors.finish_at}
                                         />
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors.finish_at}
-                                        </Form.Control.Feedback>
+                                        <InputError message={errors.finish_at} className="mt-2" />
                                     </Form.Group>
                                 </Col>
                             )}
@@ -270,9 +277,7 @@ export default function JobexperienceForm({ freelancer }) {
                                 onChange={(e) => handleChange("description", e.target.value)}
                                 isInvalid={!!errors.description}
                             />
-                            <Form.Control.Feedback type="invalid">
-                                {errors.description}
-                            </Form.Control.Feedback>
+                            <InputError message={errors.des} className="mt-2" />
                         </Form.Group>
 
                         <div className="mt-3 d-flex gap-3">

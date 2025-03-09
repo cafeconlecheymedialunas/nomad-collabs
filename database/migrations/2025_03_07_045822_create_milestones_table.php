@@ -14,7 +14,16 @@ class CreateMilestonesTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->decimal('cost', 10, 2);  // Costo estimado del hito
-            $table->integer('duration'); // Duración estimada en días o en horas
+            $table->integer("revisions");
+            $table->decimal("cost", 10, 2);
+            
+
+        
+            $table->integer("estimation_optimistic");
+            $table->integer("estimation__more_probabbly");
+            $table->integer("estimation_pesimistic");
+            $table->integer('estimated_time')->nullable();
+
             $table->datetime("init_at")->nullable();
             $table->dateTime("finish_at")->nullable();
             $table->enum('status', ['pending', 'completed', 'in_progress'])->default('pending'); // Estado del hito

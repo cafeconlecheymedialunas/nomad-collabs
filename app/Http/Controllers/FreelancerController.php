@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Freelancer;
 use App\Http\Requests\UpdateFreelancerRequest;
+use App\Models\Skill;
 use Inertia\Inertia;
 
 class FreelancerController extends Controller
@@ -28,7 +29,8 @@ class FreelancerController extends Controller
         $freelancer = Freelancer::findOrFail($id);
 
         return Inertia::render('Profile/Edit', [
-            'freelancer' => $freelancer,
+            'freelancer' => $freelancer->load(["user","educations","jobExperiences","skillLevels.skill"]),
+            "skills" => Skill::all()
         ]);
     }
 
@@ -42,7 +44,7 @@ class FreelancerController extends Controller
         // Actualiza el freelancer con los datos validados
         $freelancer->update($request->validated());
 
-        return redirect()->route('freelancers.edit', $freelancer->id)
+        return redirect()->route('freelancer.edit', $freelancer->id)
             ->with('success', 'Perfil actualizado correctamente');
     }
 
@@ -56,7 +58,7 @@ class FreelancerController extends Controller
 
         $freelancer->delete();
 
-        return redirect()->route('freelancers.index')
+        return redirect()->route('freelancer.index')
             ->with('success', 'Perfil eliminado correctamente');
     }
 }

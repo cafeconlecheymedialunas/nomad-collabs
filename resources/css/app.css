@@ -8,3 +8,36 @@
 @import url("style.css");
 @import url("ud-custom-spacing.css");
 @import url("dashboard_navigation.css");
+
+
+.hidden-range {
+    opacity: 0; /* Hace que el input sea transparente */
+    position: absolute; /* Lo saca del flujo normal del documento */
+    width: 100%; /* Asegura que ocupe todo el ancho del contenedor */
+    height: 100%; /* Asegura que ocupe todo el alto del contenedor */
+    cursor: pointer; /* Mantiene el cursor como pointer para indicar que es clickeable */
+}
+
+.progress {
+    position: relative; /* Asegura que el input de rango se posicione correctamente */
+}
+
+.mb20 {
+    margin-bottom: 20px;
+}
+
+.del-edit {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.icon {
+    color: #000;
+    text-decoration: none;
+    margin-left: 10px;
+}
+
+.icon:hover {
+    color: #ff0000;
+}

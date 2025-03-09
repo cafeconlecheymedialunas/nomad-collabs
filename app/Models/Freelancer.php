@@ -42,6 +42,11 @@ class Freelancer extends Model
         return $this->hasMany(JobExperience::class);
     }
 
+    public function skillLevels()
+    {
+        return $this->hasMany(SkillLevel::class);
+    }
+
     public function portfolios()
     {
         return $this->hasMany(Portfolio::class);

@@ -14,7 +14,7 @@ class SkillLevelFactory extends Factory
         return [
             'freelancer_id' => \App\Models\Freelancer::factory(),
             'skill_id' => \App\Models\Skill::factory(),
-            'level' => $this->faker->numberBetween(1, 10),
+            'level' => $this->faker->randomElement(["beginner","intermediate","pro"]),
         ];
     }
 }

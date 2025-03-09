@@ -20,7 +20,8 @@ return new class extends Migration
             $table->foreignId('parent_proposal_id')->nullable()->constrained('proposals')->onDelete('cascade'); // Referencia a la propuesta 
             $table->enum("proposal_type",["standard","custom_order"]);
             $table->enum("execution_type",["fixed","milestones"])->default("fixed");
-        
+         
+            
         
             $table->text("description");
             $table->text('project_overview')->nullable();
@@ -36,11 +37,14 @@ return new class extends Migration
             
             $table->integer("revisions");
             $table->decimal("cost", 10, 2);
-            $table->integer("duration");
+            
             $table->timestamp("contract_start_date")->nullable(); // Fecha de inicio del contrato
             $table->timestamp("contract_end_date")->nullable();
-         
-
+            $table->enum("estimation_time_units",["days","hours"]);
+            $table->integer("estimation_optimistic");
+            $table->integer("estimation__more_probabbly");
+            $table->integer("estimation_pesimistic");
+            $table->integer("time_estimated");
 
             $table->enum('payment_method', ['fixed', 'milestone_based'])->default('fixed');
             $table->timestamps();

@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tasks', function (Blueprint $table) {
+        Schema::create('project_actions', function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->text('description')->nullable();
-            $table->timestamp("estimated_delivery_date_start")->nullable();
+            $table->timestamp("estimated _delivery_date_start")->nullable();
             $table->timestamp("estimated_delivery_date_end")->nullable();
             $table->decimal("estimated_cost_lowest", 10, 2)->nullable();
             $table->decimal("estimated_cost_highest", 10, 2)->nullable();
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tasks');
+        Schema::dropIfExists('actions');
     }
 };

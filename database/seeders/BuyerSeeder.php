@@ -83,12 +83,7 @@ class BuyerSeeder extends Seeder
 
                         // Crear milestones para la propuesta
                         Milestone::factory(rand(1, 5))->create([
-                            'proposal_id' => $proposal->id,
-                            'title' => 'Hito para ' . $proposal->id,
-                            'description' => 'Descripción del hito',
-                            'cost' => rand(50, 500),
-                            'duration' => rand(1, 15),
-                            'status' => 'pending',
+                            'proposal_id' => $proposal->id
                         ]);
                     }
                 }

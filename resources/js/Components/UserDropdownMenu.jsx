@@ -4,8 +4,13 @@ import { Dropdown } from 'react-bootstrap';
 import { FaHome, FaFileAlt, FaRegHeart, FaCommentAlt, FaStar, FaReceipt, FaDollarSign, FaRegNewspaper, FaTasks, FaBriefcase, FaProjectDiagram, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import LogoutLink from './LogoutLink';
 
-const UserDropdownMenu = ({user,freelancer}) => {
+const UserDropdownMenu = ({user}) => {
+
+  
+
     return (
+         
+       
         <Dropdown>
             <Dropdown.Toggle variant="link" id="user-dropdown" className="btn">
                 <img src="https://creativelayers.net/themes/freeio-html/images/resource/user.png" alt="user.png" />
@@ -15,7 +20,7 @@ const UserDropdownMenu = ({user,freelancer}) => {
                 <div className="user_setting_content">
                     <p className="fz15 fw400 ff-heading mt-4 ps-4">Account</p>
                     <Dropdown.Item href={route("dashboard")}>
-                       <Link href={`/freelancer/${freelancer.id}/edit`}><FaUser className="mr-2" /> My Profile</Link> 
+                       <Link href={`/freelancer/${user.freelancer.id}/edit`}><FaUser className="mr-2" /> My Profile</Link> 
                     </Dropdown.Item>
                     <LogoutLink/>
                     <p className="fz15 fw400 ff-heading mb-2 ps-4">Start</p>

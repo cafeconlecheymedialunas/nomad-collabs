@@ -11,18 +11,12 @@ export default function Auth({ children }) {
   return (
     <div className="wrapper ovh mm-page mm-slideout" id="mm-28">
       <div className="preloader" style={{ display: 'none' }} />
-      {/* Main Header Nav */}
       <Header />
-
-      {/* Search Modal */}
       <SearchModal />
       <div className="hiddenbar-body-ovelay" />
-      {/* Mobile Nav  */}
       <MobileHeader />
       <div className="body_content">
-        {/* Our LogIn Area */}
         {children}
-        {/* Our Footer */}
         <Footer />
        
       </div>

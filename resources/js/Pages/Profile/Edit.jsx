@@ -3,7 +3,7 @@ import { router, usePage } from '@inertiajs/react';
 import UpdateFreelancerInformation from './partials/UpdateFreelancerInformation';
 import DeleteUserForm from '../Account/Partials/DeleteUserForm';
 import UpdatePasswordForm from '../Account/Partials/UpdatePasswordForm';
-import AuthenticatedLayout from '@/Layouts/authenticated/AuthenticatedLayout';
+import AuthenticatedLayout from '@/Layouts/dashboard/AuthenticatedLayout';
 import EducationForm from './partials/EducationForm';
 import { FaRegTrashCan } from 'react-icons/fa6';
 import JobExperienceForm from './partials/JobExperienceForm';

@@ -1,4 +1,4 @@
-import AuthLayout from '@/Layouts/auth/AuthLayout';
+import AuthLayout from '@/Layouts/frontend/AuthenticatedFrontendLayout';
 import PrimaryButton from '@/Components/PrimaryButton';
 import { Head, Link, useForm } from '@inertiajs/react';
 

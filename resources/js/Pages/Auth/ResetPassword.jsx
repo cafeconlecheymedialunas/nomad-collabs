@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import AuthLayout from '@/Layouts/auth/AuthLayout';
+import AuthLayout from '@/Layouts/frontend/AuthenticatedFrontendLayout';
 import InputError from '@/Components/InputError';
 import InputLabel from '@/Components/InputLabel';
 import PrimaryButton from '@/Components/PrimaryButton';

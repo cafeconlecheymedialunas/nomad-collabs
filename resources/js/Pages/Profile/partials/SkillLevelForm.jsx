@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaRegTrashAlt, FaEdit, FaSave } from "react-icons/fa";
 import { Form } from "react-bootstrap";
 
-export default function SkillLevelForm({ freelancer, skills }) {
+export default function SkillLevelForm({ freelancer, skills ,errors}) {
     // Estado para las habilidades del freelancer
     const [skillLevels, setSkillLevels] = useState(freelancer.skill_levels || []);
 

@@ -1,9 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/dashboard/AuthenticatedLayout';
+import AuthenticatedFrontend from '@/Layouts/frontend/AuthenticatedFrontendLayout';
 import { Head } from '@inertiajs/react';
 
 export default function Dashboard({ auth, freelancer }) {
     return (
-        <AuthenticatedLayout
+        <AuthenticatedFrontend
             user={auth.user}
             freelancer={freelancer}
             header={<h2 className="fw-semibold fs-4 text-dark">Dashboard</h2>}
@@ -23,6 +24,6 @@ export default function Dashboard({ auth, freelancer }) {
                     </div>
                 </div>
             </div>
-        </AuthenticatedLayout>
+        </AuthenticatedFrontend>
     );
 }

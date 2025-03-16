@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\EducationController;
+use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\FreelancerController;
 use App\Http\Controllers\JobExperienceController;
 use App\Models\Freelancer;
@@ -59,7 +60,11 @@ Route::middleware('auth')->group(function () {
                 'destroy' => 'freelancer.job-experience.destroy',
             ]);
     });
+
+    Route::post('/files/upload', [FileUploadController::class, 'upload'])->name('files.upload');
+    Route::get('/files', [FileUploadController::class, 'index'])->name('files.index');
+    Route::delete('/files/{file}', [FileUploadController::class, 'destroy'])->name('files.destroy');
+    Route::post('/files', [FileUploadController::class, 'assignFileToEntity'])->name('files.assign');
+    Route::put('/files/{file}', [FileUploadController::class, 'updateFile'])->name('files.update');
 });
-
-
 require __DIR__ . '/auth.php';

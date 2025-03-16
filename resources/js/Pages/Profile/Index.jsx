@@ -2,7 +2,7 @@ import { Head } from "@inertiajs/react";
 
 
 export default function Index({ freelancers }) {
-  console.log(freelancers)
+
     return (
             <>
             <Head title="Freelancers" />

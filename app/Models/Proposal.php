@@ -40,6 +40,32 @@ class Proposal extends Model
         'payment_method'
     ];
 
+    protected static function booted()
+    {
+
+        parent::boot();
+        
+        static::updating(function ($proposal) {
+            foreach ($proposal->getDirty() as $field => $newValue) {
+                // Comprobar si el campo tiene un valor antiguo y nuevo diferente
+                $oldValue = $proposal->getOriginal($field);
+                
+                if ($oldValue != $newValue) {
+                    // Guardar el cambio en la tabla de field_changes con relación polimórfica
+                    FieldChangeLog::create([
+                        'changeable_id' => $proposal->id,
+                        'changeable_type' => Proposal::class,
+                        'field_name' => $field,
+                        'old_value' => $oldValue,
+                        'new_value' => $newValue,
+                        'changed_by' => auth()->id(), // Usuario que hizo el cambio
+                    ]);
+                }
+            }
+        });
+    }
+
+
 
 
 

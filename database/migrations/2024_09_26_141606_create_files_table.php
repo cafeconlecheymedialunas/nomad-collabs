@@ -13,19 +13,20 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->string('path'); 
-            $table->string('name'); 
-            $table->string('mime_type'); 
-            $table->string('alt')->nullable(); 
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Relación con usuarios
+            $table->string('path');
+            $table->string('name');
+            $table->string('mime_type');
+            $table->string('alt')->nullable();
             $table->timestamps();
         });
 
         Schema::create('fileables', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('file_id');
-            $table->morphs('fileable');
+            $table->foreignId('file_id')->constrained('files')->onDelete('cascade');
+            $table->morphs('fileable'); // Permite relacionar con cualquier entidad
+            $table->string('type')->nullable(); // Tipo de imagen (ej: "thumbnail", "featured")
             $table->timestamps();
-            $table->foreign('file_id')->references('id')->on('files')->onDelete('cascade');
         });
         
         

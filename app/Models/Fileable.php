@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,15 +8,8 @@ class Fileable extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'file_id',
-        'fileable_type',
-        'fileable_id'
-    ];
+    protected $fillable = ['file_id', 'fileable_id', 'fileable_type', 'type'];
 
-    public $timestamps = false; // No es necesario tener los timestamps para esta tabla
-
-    // Relación inversa: un fileable puede pertenecer a un archivo
     public function file()
     {
         return $this->belongsTo(File::class);

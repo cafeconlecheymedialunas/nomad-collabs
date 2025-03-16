@@ -56,5 +56,26 @@ class Task extends Model
                 throw new \Exception('Task must be assigned to either a milestone or a proposal');
             }
         });
+
+        static::updating(function ($task) {
+            foreach ($task->getDirty() as $field => $newValue) {
+                // Comprobar si el campo tiene un valor antiguo y nuevo diferente
+                $oldValue = $task->getOriginal($field);
+                
+                if ($oldValue != $newValue) {
+                    // Guardar el cambio en la tabla de field_changes con relación polimórfica
+                    FieldChangeLog::create([
+                        'changeable_id' => $task->id,
+                        'changeable_type' => Task::class,
+                        'field_name' => $field,
+                        'old_value' => $oldValue,
+                        'new_value' => $newValue,
+                        'changed_by' => auth()->id(), // Usuario que hizo el cambio
+                    ]);
+                }
+            }
+        });
     }
+
+    
 }

@@ -6,8 +6,8 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import { router } from '@inertiajs/react';
 import SecondaryButton from "@/Components/SecondaryButton";
 
-export default function EducationForm({ freelancer }) {
-    const { errors } = usePage().props;
+export default function EducationForm({ freelancer,errors }) {
+
 
     const monthNames = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
     const [editingIndex, setEditingIndex] = useState(null);

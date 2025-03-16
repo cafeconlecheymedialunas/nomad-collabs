@@ -87,7 +87,7 @@ export default function JobexperienceForm({ freelancer }) {
         setConfirmModalOpen(true);
     };
 
-    console.log(errors)
+
 
     // Eliminar experiencia laboral después de confirmar
     const confirmRemoveJobexperience = () => {

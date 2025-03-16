@@ -25,10 +25,7 @@ return new class extends Migration
             $table->string('display_name')->nullable(); 
             $table->string('country_origin')->nullable();
             $table->string('country_residence')->nullable(); 
-            $table->string('cover')->nullable(); 
-            $table->boolean('account_active')->default(true)->nullable();
-            $table->string('video')->nullable(); // Enlace a video (opcional)
-        
+            $table->boolean('account_active')->default(true)->nullable();      
             $table->timestamps();
         });
     }

@@ -1,12 +1,18 @@
 import InputError from '@/Components/InputError';
 import PrimaryButton from '@/Components/PrimaryButton';
-import { useForm } from '@inertiajs/react';
-import CoverImageUpload from '@/Components/CoverImageUpload';
 import { FaArrowRightLong } from 'react-icons/fa6';
 import { Form, Col } from 'react-bootstrap';
+import CoverImageUpload from '@/Components/CoverImageUpload';
+import MediaGalleryUpload from '../../../Components/MediaGalleryUpload/MediaGalleryUpload';
+import { useState } from 'react';
+import { useForm } from '@inertiajs/react';
 
-export default function UpdateFreelancerForm({ className = '',freelancer }) {
-    const { data, setData, post, put, errors, processing, recentlySuccessful } = useForm({
+export default function UpdateFreelancerForm({ auth,className = '', freelancer }) {
+    // Usar useState para manejar el estado del formulario
+    
+    
+   
+    const { data, setData, put, delete: destroy, errors, processing } = useForm({
         user_id: freelancer?.user.id,
         first_name: freelancer?.first_name || '',
         last_name: freelancer?.last_name || '',
@@ -19,20 +25,39 @@ export default function UpdateFreelancerForm({ className = '',freelancer }) {
         display_name: freelancer?.display_name || '',
         country_origin: freelancer?.country_origin || '',
         country_residence: freelancer?.country_residence || '',
-        video: freelancer?.video || '',
-        cover: freelancer?.cover || '',
     });
 
-    const handleCoverChange = (file) => {
-        setData('cover', file);
-    };
+    // Handler para cambiar la imagen de portada (Cover)
 
+
+    // Función que se ejecuta cuando el formulario se envía
     const submit = (e) => {
         e.preventDefault();
-        freelancer ? put(route('freelancer.update', freelancer.id)) : post(route('freelancer.store'));
+
+        // Crear un objeto FormData para enviar los datos y archivos
+        const formData = new FormData();
+
+        // Añadir los datos del formulario (normales y archivos)
+        Object.keys(data).forEach((key) => {
+            formData.append(key, data[key]);
+        });
+
+        // Usamos router.put() para hacer la solicitud PUT
+        put(route("freelancer.update", { freelancer: freelancer.id }), {
+            data: formData,
+            preserveScroll: true,  // Mantener el scroll después de la solicitud
+            onSuccess: () => {
+
+                console.log("Form submitted successfully");
+            },
+            onError: (error) => {
+                // Manejo de errores, ya los estamos obteniendo en `errors` de la página
+                console.log("Error", error);
+            }
+        });
     };
 
-    // Array de campos con 'type' dinámico
+    // Campos del formulario (como array de objetos)
     const fields = [
         { id: 'first_name', label: 'First Name', type: 'text' },
         { id: 'last_name', label: 'Last Name', type: 'text' },
@@ -44,15 +69,19 @@ export default function UpdateFreelancerForm({ className = '',freelancer }) {
         { id: 'display_name', label: 'Display Name', type: 'text' },
         { id: 'country_origin', label: 'Country of Origin', type: 'text' },
         { id: 'country_residence', label: 'Country of Residence', type: 'text' },
-        { id: 'video', label: 'Video Link', type: 'url' },
+        { id: 'account_active', label: 'Actived?', type: 'checkboxes' },
     ];
 
-    return (
-        <Form onSubmit={submit} className={`row g-3 ${className || ''}`}>
-            <Form.Group as={Col} xs={12}>
-                <CoverImageUpload cover={data.cover} onChange={handleCoverChange} />
-            </Form.Group>
+    
 
+    return (
+        <>
+  
+        <Form onSubmit={submit} className={`row g-3 ${className || ''}`}>
+           
+           
+           
+            {/* Campos dinámicos */}
             {fields.map(({ id, label, type }) => (
                 <Form.Group as={Col} md={6} key={id}>
                     <Form.Label htmlFor={id}>{label}</Form.Label>
@@ -60,31 +89,34 @@ export default function UpdateFreelancerForm({ className = '',freelancer }) {
                         id={id}
                         type={type} // tipo dinámico
                         value={data[id]}
-                        onChange={(e) => setData(id, e.target.value)}
+                        onChange={(e) => setData({ ...data, [id]: e.target.value })}
                     />
                     <InputError message={errors[id]} />
                 </Form.Group>
             ))}
 
+            {/* Campo de descripción */}
             <Form.Group as={Col} xs={12}>
                 <Form.Label htmlFor="description">Description</Form.Label>
                 <Form.Control
                     as="textarea"
                     id="description"
                     value={data.description}
-                    onChange={(e) => setData('description', e.target.value)}
+                    onChange={(e) => setData({ ...data, description: e.target.value })}
                     rows={4}
                     required
                 />
                 <InputError message={errors.description} />
             </Form.Group>
 
+            {/* Botón de guardar */}
             <Form.Group as={Col} xs={12} className="d-flex align-items-center gap-3">
                 <PrimaryButton disabled={processing}>
                     Save <FaArrowRightLong />
                 </PrimaryButton>
-                {recentlySuccessful && <p className="text-success">Saved.</p>}
             </Form.Group>
         </Form>
+       
+        </>
     );
 }

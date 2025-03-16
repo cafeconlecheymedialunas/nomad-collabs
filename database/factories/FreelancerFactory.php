@@ -23,9 +23,8 @@ class FreelancerFactory extends Factory
             'display_name' => $this->faker->name,
             'country_origin' => $this->faker->country,
             'country_residence' => $this->faker->country,
-            'cover' => $this->faker->imageUrl(),
             'account_active' => $this->faker->boolean,
-            'video' => $this->faker->url,
+         
         ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Freelancer extends Model
 {
@@ -13,20 +14,18 @@ class Freelancer extends Model
         'user_id',
         'first_name',
         'last_name',
+        'nick_name',
+        'display_name',
         'state',
         'city',
         'post_code',
         'address',
-        'nick_name',
-        'description',
-        'display_name',
         'country_origin',
         'country_residence',
-        'cover',
-        'account_active',
-        'video',
+        'description',
     ];
 
+    
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -72,16 +71,28 @@ class Freelancer extends Model
         return $this->belongsToMany(Category::class);
     }
 
-   
-    public function coverImage()
-    {
-        return $this->morphOne(Fileable::class, 'fileable')->where('type', 'cover');
-    }
-
   
-    public function introVideo()
+
+    /**
+     * Relación polimórfica para el video.
+     */
+    public function files()
     {
-        return $this->morphOne(Fileable::class, 'videoable')->where('type', 'intro');
+        return $this->morphToMany(File::class, 'fileable')
+        ->withPivot('type');
     }
 
+    public function cover()
+    {
+        return $this->morphToMany(File::class, 'fileable')
+        ->withPivot('type')
+        ->wherePivot('type', 'cover'); 
+    }
+
+    public function video_presentation()
+    {
+        return $this->morphToMany(File::class, 'fileable')
+        ->withPivot('type')
+        ->wherePivot('type', 'video_presentation'); 
+    }
 }

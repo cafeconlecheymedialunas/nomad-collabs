@@ -12,7 +12,8 @@ const UserDropdownMenu = ({user,freelancer}) => {
        
         <Dropdown>
             <Dropdown.Toggle variant="link" id="user-dropdown" className="btn">
-                <img src="https://creativelayers.net/themes/freeio-html/images/resource/user.png" alt="user.png" />
+                <img src={freelancer?.cover[0]?.image_url ?? "/assets/img/default-avatar.png"} width={50} height={50} alt="user.png"
+                style={{width:"50px",height:"50px",objectFit:"cover",objectPosition:"center",borderRadius:"50%"}} />
             </Dropdown.Toggle>
 
             <Dropdown.Menu>

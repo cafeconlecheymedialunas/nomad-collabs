@@ -96,7 +96,7 @@ export default function JobexperienceForm({ freelancer }) {
 
     // Eliminar experiencia laboral después de confirmar
     const confirmRemoveJobexperience = () => {
-        console.log(data.id)
+   
         if (data.id) {
             destroy(
                 route("freelancer.job-experience.destroy", { freelancer: freelancer.id, job_experience: data.id }),
@@ -125,7 +125,7 @@ export default function JobexperienceForm({ freelancer }) {
             </div>
 
             <div className="position-relative">
-                <div className="jobexperienceal-quality">
+                <div className="educational-quality">
                     {freelancer.job_experiences && freelancer.job_experiences.map((jobexperience, index) => (
                         <div key={jobexperience.id}>
                             <div className="m-circle text-thm">M</div>

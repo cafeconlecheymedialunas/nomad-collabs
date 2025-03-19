@@ -136,7 +136,6 @@ class FileUploadController extends Controller
         $validated = $request->validate([
             'name' => 'nullable|string|max:255',
             'alt' => 'nullable|string|max:255',
-            'file' => 'nullable|file', // Permite subir un nuevo archivo (si es necesario)
         ]);
 
 

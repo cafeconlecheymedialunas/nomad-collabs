@@ -1,119 +1,147 @@
 import { useState } from "react";
-import { useForm, usePage } from "@inertiajs/react";
-import { Col, Container, Form, Image, Modal, Row } from "react-bootstrap";
-import { FaTrashAlt, FaPlus } from "react-icons/fa";
+import { useForm } from "@inertiajs/react";
+import { Col, Form, Image, Modal, Row } from "react-bootstrap";
+import { useDropzone } from "react-dropzone";
 import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
-import "./media-gallery.css";
 import InputError from "../InputError";
-import { FaClosedCaptioning, FaMinus, FaPencil, FaRegTrashCan } from "react-icons/fa6";
+import "./media-gallery.css";
+import { FaPencil, FaPlus, FaRegTrashCan } from "react-icons/fa6";
+import { FaPencilAlt } from "react-icons/fa";
 
-export default function MediaGalleryUpload({ files, relatedEntityType, relatedEntityId, errors, fileMimeType }) {
-
+export default function MediaGalleryUpload({ files, relatedEntityType, relatedEntityId, errors, fileMimeType, isMultiple = false }) {
+    // Estado del formulario y modales
     const { data, setData, post, put, delete: destroy, processing } = useForm({
         file: null,
         file_id: null,
         alt: "",
+        name: "",
         fileable_id: relatedEntityId,
         fileable_type: relatedEntityType,
         type: "cover",
-        file_mime_type: fileMimeType
+        file_mime_type: fileMimeType,
     });
 
     const [confirmModalOpen, setConfirmModalOpen] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [modalAddOpen, setModalAddOpen] = useState(false);
-    const [formOpened, setFormOpened] = useState(false); // Controla la visibilidad del formulario
-    const [editMode, setEditMode] = useState(false); // Modo de edición
-    const [editingFile, setEditingFile] = useState(null); // Archivo que se está editando
+    const [editMode, setEditMode] = useState(false);
+    const [editingFile, setEditingFile] = useState(null);
+    const [selectedFiles, setSelectedFiles] = useState([]); // Estado para los archivos seleccionados
 
-    /** Maneja la selección de archivos */
+    // Configuración de Dropzone
+    const { getRootProps, getInputProps } = useDropzone({
+        accept: "image/*",
+        onDrop: (acceptedFiles) => {
+            setData({ ...data, file: acceptedFiles[0] });
+        },
+    });
+
+    // Handlers para cambios en el formulario
     const handleFileChange = (e) => setData("file", e.target.files[0]);
     const handleAltChange = (e) => setData("alt", e.target.value);
     const handleNameChange = (e) => setData("name", e.target.value);
 
+    // Seleccionar/deseleccionar un archivo de la lista
     const handleSelectFile = (file) => {
-        setData("file_id", data.file_id === file.id ? null : file.id);
-    };
-
-    /** Subir archivo */
-    const handleUpload = (e) => {
-        e.preventDefault();
-        if (editMode) {
-            const { file_id, name, alt } = data;
-            put(route("files.update", file_id), {
-                data: { file_id, name, alt },
-                preserveScroll: true,
-                onSuccess: () => {
-                    setData("file_id", null);
-                    setEditMode(false);
-                    setEditingFile(null);
-                },
-                onError: (errors) => console.log("Error al actualizar:", errors),
-            });
+        if (isMultiple) {
+            const isSelected = selectedFiles.some((f) => f.id === file.id);
+            if (isSelected) {
+                setSelectedFiles(selectedFiles.filter((f) => f.id !== file.id)); // Deseleccionar
+            } else {
+                setSelectedFiles([...selectedFiles, file]); // Seleccionar
+            }
         } else {
-            post(route("files.upload"), {
-                preserveScroll: true,
-                data: data,
-                onSuccess: () => {
-                    setData({ ...data, file: null, alt: "" });
-                    setFormOpened(false); // Oculta el formulario tras la subida
-                },
-                onError: (errors) => console.log("Error al subir:", errors),
-            });
+            setSelectedFiles([file]);
         }
     };
 
-    /** Eliminar archivo */
-    const handleDelete = () => {
-        if (!data.file_id) return;
-        destroy(route("files.destroy", data.file_id), {
-            preserveScroll: true,
-            onSuccess: () => {
-                setConfirmModalOpen(false);
-                setData("file_id", null);
-            },
-            onError: (errors) => console.log("Error al eliminar:", errors),
-        });
-    };
-
-    /** Asignar archivo a entidad */
-    const assignToEntity = () => {
-        const { file_id, fileable_id, fileable_type, type, alt } = data;
-        post(route("files.assign"), {
-            data: { file_id, fileable_id, fileable_type, type, alt },
-            preserveScroll: true,
-            onSuccess: () => {
-                setData("file_id", null);
-                setModalOpen(false);
-            },
-            onError: (errors) => console.log("Error al asignar:", errors),
-        });
-    };
-
-    const truncateFileName = (name, maxLength = 10) => {
-        if (name.length <= maxLength) return name;
-
-        const extension = name.split(".").pop(); // Extraer extensión
-        const nameWithoutExt = name.substring(0, name.lastIndexOf(".")); // Nombre sin extensión
-
-        return `${nameWithoutExt.substring(0, maxLength)}...${extension}`;
-    };
-
+    // Seleccionar un archivo para editar
     const handleEditFile = (file) => {
-        setEditMode(true);
-        setEditingFile(file);
         setData({
             ...data,
             file_id: file.id,
             name: file.name,
             alt: file.alt,
         });
-        setFormOpened(true);
+        setEditMode(true);
+        setEditingFile(file);
+    };
+
+    // Subir un archivo
+    const handleUpload = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append("file", data.file);
+        formData.append("fileable_id", relatedEntityId);
+        formData.append("fileable_type", relatedEntityType);
+        formData.append("type", "cover");
+        formData.append("file_mime_type", fileMimeType);
+
+        post(route("files.upload"), {
+            data: formData,
+            preserveScroll: true,
+            onSuccess: (response) => {
+                console.log(response);
+                const newFile = response.props.freelancer.user.files[response.props.freelancer.user.files.length - 1]; // Obtener el archivo recién añadido
+                setSelectedFiles([...selectedFiles, newFile]);
+                setModalAddOpen(false); // Cerrar el modal
+                setData({ ...data, file: null }); // Limpiar el archivo seleccionado
+            },
+            onError: (errors) => console.log("Error al subir:", errors),
+        });
+    };
+
+    // Eliminar un archivo
+    const handleDelete = () => {
+        if (!data.file_id) return;
+        destroy(route("files.destroy", data.file_id), {
+            preserveScroll: true,
+            onSuccess: () => {
+                setConfirmModalOpen(false);
+                setData({ ...data, file_id: null });
+                setEditMode(false);
+                setEditingFile(null);
+            },
+            onError: (errors) => console.log("Error al eliminar:", errors),
+        });
+    };
+
+    // Asignar archivos seleccionados a la entidad
+    const handleAssignToEntity = () => {
+        if (selectedFiles.length === 0) return;
+
+        console.log(selectedFiles)
+        selectedFiles.forEach((file) => {
+            post(route("files.assign"), {
+                data: {
+                    file_id: file.id,
+                    fileable_id: relatedEntityId,
+                    fileable_type: relatedEntityType,
+                    type: "cover",
+                    alt: file.alt,
+                },
+                preserveScroll: true,
+                onSuccess: () => {
+                    setSelectedFiles([]);
+                    setModalOpen(false);
+                },
+                onError: (errors) => console.log("Error al asignar:", errors),
+            });
+        });
+    };
+
+    // Acortar el nombre del archivo para mostrarlo
+    const truncateFileName = (name, maxLength = 10) => {
+        if (name.length <= maxLength) return name;
+        const extension = name.split(".").pop();
+        const nameWithoutExt = name.substring(0, name.lastIndexOf("."));
+        return `${nameWithoutExt.substring(0, maxLength)}...${extension}`;
     };
 
     return (
         <>
+            {/* Botón para abrir el modal */}
             <a href="#" className="upload-btn ml10" onClick={(e) => { e.preventDefault(); setModalOpen(true); }}>
                 Upload image
             </a>
@@ -139,52 +167,63 @@ export default function MediaGalleryUpload({ files, relatedEntityType, relatedEn
             {/* Modal de la biblioteca de medios */}
             <Modal show={modalOpen} dialogClassName="modal-90w" scrollable centered onHide={() => setModalOpen(false)}>
                 <Modal.Header closeButton>
+                    <h3 className="list-title">Media Gallery</h3>
+                    <button className="add-more-btn text-thm btn" onClick={() => setModalAddOpen(true)}>
+                        <FaPlus /> Add file
+                    </button>
                 </Modal.Header>
                 <Modal.Body className="py-0">
-
-
                     <Row>
+                        {/* Lista de archivos */}
                         <Col sm={9}>
-                            <div className="bdrb1 pb15 mb30 d-sm-flex justify-content-between">
-                                <h3 className="list-title">Media Gallery</h3>
-                                <button
-                                    className="add-more-btn text-thm btn"
-                                    onClick={(e) => {
-                                        e.preventDefault();
-                                        setModalAddOpen(!modalAddOpen);
-                                        setEditMode(false);
-                                        setEditingFile(null);
-                                    }}
-                                >
-                                    <FaPlus /> Add file
-                                </button>
-                            </div>
-                            {/* Lista de archivos */}
                             <div className="row">
-                                {files && files.map((file) => (
-                                    <div key={file.id} className="col-sm-6 col-lg-4 col-xl-3">
+                                {files.map((file) => (
+                                    <div key={file.id}
+                                    onClick={() => handleSelectFile(file)} 
+                                     className="col-sm-6 col-lg-4 col-xl-3">
                                         <div
-                                            className={`position-relative listing-style1 ${data.file_id === file.id ? 'selected' : ''}`}
-                                            onClick={(e) => handleSelectFile(file)}
-                                            style={{ cursor: "pointer" }}
+                                        
+                                            className={`position-relative listing-style1 ${
+                                                selectedFiles.some((f) => f.id === file.id) ? "selected" : ""
+                                            }`}
                                         >
+                                            {/* Checkbox para seleccionar el archivo */}
+                                          
+                                            <div
+                                                className={`selection-indicator ${
+                                                    selectedFiles.some((f) => f.id === file.id) ? "selected" : ""
+                                                }`}
+                                            >
+                                                {selectedFiles.some((f) => f.id === file.id) && (
+                                                    <div className="checkmark">✓</div>
+                                                )}
+                                            </div>
                                             <img src={file.image_url} alt={file.name} className="w-100 h-auto rounded" />
                                             <div className="px-4 py-3">
                                                 <h6 className="title">{truncateFileName(file.name, 15)}</h6>
                                                 <p>{file.mime_type}</p>
-                                                <div className="del-edit position-static">
-                                                    <div className="d-flex justify-content-end">
-                                                        <a href="#" className="icon me-2 d-flex justify-content-center align-items-center" onClick={(e) => { e.stopPropagation(); handleEditFile(file); }}>
-                                                            <FaPencil />
-                                                        </a>
-                                                        <a href="#" className="icon d-flex justify-content-center align-items-center" onClick={(e) => {
-                                                            e.stopPropagation(); // Evita la propagación del evento al div contenedor
+
+                                                <div className="d-flex">
+                                                    <a
+                                                        href="#"
+                                                        className="icon me-2"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation(); // Evitar la propagación del evento
+                                                            handleEditFile(file);
+                                                        }}
+                                                    >
+                                                        <FaPencil />
+                                                    </a>
+                                                    <a
+                                                        href="#"
+                                                        className="icon"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation(); // Evitar la propagación del evento
                                                             setConfirmModalOpen(true);
-                                                            setData("file_id", file.id); // Solo selecciona para eliminar
-                                                        }}>
-                                                            <FaRegTrashCan size={30} className="p-1" disabled={processing} />
-                                                        </a>
-                                                    </div>
+                                                        }}
+                                                    >
+                                                        <FaRegTrashCan />
+                                                    </a>
                                                 </div>
                                             </div>
                                         </div>
@@ -192,79 +231,65 @@ export default function MediaGalleryUpload({ files, relatedEntityType, relatedEn
                                 ))}
                             </div>
                         </Col>
-                        <Col md={3} style={{ background: "#ccc" }}>
-                            <form onSubmit={handleUpload} className="mb-4">
-                                <Image src={file.image_url} rounded />
-                                <Form.Group>
-                                    <Form.Label>Name</Form.Label>
-                                    <Form.Control
-                                        type="text"
-                                        value={data.name}
-                                        onChange={handleNameChange}
-                                    />
-                                    <InputError message={errors.name} />
-                                </Form.Group>
-                                <Form.Group className="mb-2">
-                                    <Form.Label>Image Alt Text</Form.Label>
-                                    <Form.Control type="text" onChange={handleAltChange} value={data.alt} />
-                                    {errors.alt && <InputError message={errors.alt} />}
-                                </Form.Group>
 
-                                <PrimaryButton type="submit" className="px-3 py-1 me-2" disabled={processing}>Upload</PrimaryButton>
-                                <SecondaryButton className="px-3 py-1" onClick={(e) => { e.preventDefault(); setFormOpened(false); setEditMode(false); setEditingFile(null); }}>Cancel</SecondaryButton>
-                            </form>
+                        {/* Formulario de edición en el costado */}
+                        <Col md={3} style={{ background: "#f8f9fa", padding: "20px" }}>
+                            {editMode && editingFile && (
+                                <>
+                                    <Image src={editingFile.image_url} rounded className="mb-3 img-fluid" />
+                                    <Form onSubmit={handleEditFile}>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Name</Form.Label>
+                                            <Form.Control type="text" value={data.name ?? ""} onChange={handleNameChange} />
+                                            <InputError message={errors.name} />
+                                        </Form.Group>
+                                        <Form.Group className="mb-3">
+                                            <Form.Label>Alt Text</Form.Label>
+                                            <Form.Control type="text" value={data.alt ?? ""} onChange={handleAltChange} />
+                                            <InputError message={errors.alt} />
+                                        </Form.Group>
+                                        <PrimaryButton type="submit" disabled={processing}>
+                                            Save Changes
+                                        </PrimaryButton>
+                                        <SecondaryButton className="ms-2" onClick={() => setEditMode(false)}>
+                                            Cancel
+                                        </SecondaryButton>
+                                    </Form>
+                                </>
+                            )}
                         </Col>
                     </Row>
-
-
-
-
-
-
-
                 </Modal.Body>
-                <Modal.Footer className="d-flex align-items-center media-gallery-files">
-                    <PrimaryButton disabled={!data.file_id || processing} onClick={assignToEntity}>
-                        Asignar a la entidad
+                <Modal.Footer>
+                    <PrimaryButton disabled={selectedFiles.length === 0 || processing} onClick={handleAssignToEntity}>
+                        Assign to Entity
                     </PrimaryButton>
-                    <SecondaryButton onClick={() => setModalOpen(false)}>Cancelar</SecondaryButton>
+                    <SecondaryButton onClick={() => setModalOpen(false)}>Cancel</SecondaryButton>
                 </Modal.Footer>
             </Modal>
-            {"Add File Modal Form"}
+
+            {/* Modal para añadir archivo */}
             <Modal show={modalAddOpen} centered onHide={() => setModalAddOpen(false)}>
                 <Modal.Header closeButton>
-                    Add File
+                    <Modal.Title>Add File</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-
-
-
-                    <form onSubmit={handleUpload} className="mb-4">
-                        <Form.Group>
-                            <Form.Label>Name</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={data.name}
-                                onChange={handleNameChange}
-                            />
-                            <InputError message={errors.name} />
-                        </Form.Group>
-                        <Form.Group className="mb-2">
-                            <Form.Label>Image Alt Text</Form.Label>
-                            <Form.Control type="text" onChange={handleAltChange} value={data.alt} />
-                            {errors.alt && <InputError message={errors.alt} />}
-                        </Form.Group>
-
-                        <Form.Group className="mb-3">
-                            <Form.Label>Select Image</Form.Label>
-                            <Form.Control disabled={editMode} type="file" onChange={handleFileChange} />
-                            {errors.file && <InputError message={errors.file} />}
-                        </Form.Group>
-
-                        <PrimaryButton type="submit" className="px-3 py-1 me-2" disabled={processing}>Upload</PrimaryButton>
-                        <SecondaryButton className="px-3 py-1" onClick={(e) => { e.preventDefault(); setFormOpened(false); setEditMode(false); setEditingFile(null); }}>Cancel</SecondaryButton>
-                    </form>
-
+                    <div {...getRootProps({ className: "dropzone" })}>
+                        <input {...getInputProps()} />
+                        <p>Arrastra y suelta una imagen aquí, o haz clic para seleccionar una.</p>
+                        {data.file && (
+                            <div>
+                                <Image src={URL.createObjectURL(data.file)} rounded className="mb-3 img-fluid" />
+                                <p>{data.file.name}</p>
+                            </div>
+                        )}
+                    </div>
+                    <PrimaryButton onClick={handleUpload} disabled={!data.file || processing}>
+                        Save
+                    </PrimaryButton>
+                    <SecondaryButton className="ms-2" onClick={() => setModalAddOpen(false)}>
+                        Cancel
+                    </SecondaryButton>
                 </Modal.Body>
             </Modal>
         </>

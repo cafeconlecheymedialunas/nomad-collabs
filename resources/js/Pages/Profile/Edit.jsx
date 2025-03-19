@@ -14,7 +14,7 @@ const Edit = ({ freelancer, skills }) => {
 
 
     const { auth, errors } = usePage().props
-    console.log(freelancer)
+
     return (
         <AuthenticatedLayout
             user={freelancer.user}

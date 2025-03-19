@@ -22,3 +22,43 @@
 .selected{
     box-shadow: 0px 6px 15px rgba(64, 79, 104, 0.05);
 }
+
+/* Estilo para el indicador de selección */
+.selection-indicator {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.selection-indicator.selected {
+    border-color: #007bff;
+    background-color: #007bff;
+}
+
+.selection-indicator .checkmark {
+    color: white;
+    font-size: 16px;
+}
+
+/* Estilo para el Dropzone */
+.dropzone {
+    border: 2px dashed #007bff;
+    border-radius: 5px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.dropzone p {
+    margin: 0;
+    color: #007bff;
+}
